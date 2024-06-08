@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<usuarios>
+    <usuario id="Angely" password="12345">
+        <nombre>Usuario1</nombre>
+        <edad>21</edad>
+        <email>Angely@gmail.com</email>
+        <telefono>12345678</telefono>
+    </usuario>
+    <usuario id="Oscar" password="12345">
+        <nombre>Usuario2</nombre>
+        <edad>36</edad>
+        <email>Oscar@gmail.com</email>
+        <telefono>87654321</telefono>
+    </usuario>
+    <usuario id="Jeymi" password="12345">
+        <nombre>Usuario3</nombre>
+        <edad>32</edad>
+        <email>Jeymi@gmail.com</email>
+        <telefono>56815687</telefono>
+    </usuario>
+    <usuario id="Daniel" password="12345">
+        <nombre>Usuario4</nombre>
+        <edad>29</edad>
+        <email>Daniel@gmail.com</email>
+        <telefono>12357487</telefono>
+    </usuario>
+    <usuario id="Rosita" password="12345">
+        <nombre>Usuario5</nombre>
+        <edad>45</edad>
+        <email>Rosita@gmail.com</email>
+        <telefono>68789844</telefono>
+    </usuario>
+    <usuario id="Pablo" password="12345">
+        <nombre>Usuario6</nombre>
+        <edad>20</edad>
+        <email>Pablo@gmail.com</email>
+        <telefono>56486877</telefono>
+    </usuario>
+</usuarios>
