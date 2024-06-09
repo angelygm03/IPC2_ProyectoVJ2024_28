@@ -4,51 +4,12 @@ import xml.etree.ElementTree as ET
 import re
 from clases.usuario import Usuario
 from lista_doble.lista_doble import ListaDoble
+from clases.producto import Producto
+from lista_dobleCircular.lista_dobleCircular import ListaDobleCircular
 
 # Inicializar las listas
 usuarios = ListaDoble()
-
-# Función para cargar usuarios desde uno o más archivos XML
-def cargar_usuarios():
-    file_paths = filedialog.askopenfilenames(
-        filetypes=[("XML files", "*.xml")],
-        title="Seleccionar archivos XML"
-    )
-    if file_paths:
-        try:
-            for file_path in file_paths:
-                print("Cargando usuarios desde:", file_path)
-                tree = ET.parse(file_path)
-                root = tree.getroot()
-                for user in root.findall('usuario'):
-                    user_id = user.get('id')
-                    password = user.get('password')
-                    nombre = user.find('nombre').text
-                    edad = int(user.find('edad').text)
-                    email = user.find('email').text
-                    telefono = user.find('telefono').text
-
-                    # Validaciones
-                    if usuarios.buscar_por_id(user_id) is not None:
-                        raise ValueError(f"El ID {user_id} ya existe.")
-                    
-                    if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
-                        raise ValueError(f"Email {email} no es válido.")
-
-                    if not telefono.isdigit() or len(telefono) != 8:
-                        raise ValueError(f"Teléfono {telefono} no es válido. Debe contener 8 dígitos.")
-
-                    # Crear y agregar el usuario a la lista doblemente enlazada
-                    nuevo_usuario = Usuario(user_id, nombre, edad, email, telefono, password)
-                    usuarios.insertar(nuevo_usuario)
-                    print(f"Usuario {user_id} cargado correctamente.")
-                    
-            # Mostrar en consola los usuarios cargados
-            usuarios.imprimir_usuarios()
-
-            messagebox.showinfo("Éxito", "Usuarios cargados correctamente.")
-        except Exception as e:
-            messagebox.showerror("Error", str(e))
+productos = ListaDobleCircular()
 
 # Función de autenticación de credenciales
 def autenticacion(username, password):
@@ -61,17 +22,102 @@ def autenticacion(username, password):
 
 # Función para la ventana de administrador
 def admin_window():
+    
+    # Función para cargar usuarios desde uno o más archivos XML
+    def cargar_usuarios():
+        file_paths = filedialog.askopenfilenames(
+            filetypes=[("XML files", "*.xml")],
+            title="Seleccionar archivos XML"
+        )
+        if file_paths:
+            try:
+                for file_path in file_paths:
+                    print("Cargando usuarios desde:", file_path)
+                    tree = ET.parse(file_path)
+                    root = tree.getroot()
+                    for user in root.findall('usuario'):
+                        user_id = user.get('id')
+                        password = user.get('password')
+                        nombre = user.find('nombre').text
+                        edad = int(user.find('edad').text)
+                        email = user.find('email').text
+                        telefono = user.find('telefono').text
+
+                        # Validaciones
+                        if usuarios.buscar_por_id(user_id) is not None:
+                            raise ValueError(f"El ID {user_id} ya existe.")
+                        
+                        if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+                            raise ValueError(f"Email {email} no es válido.")
+
+                        if not telefono.isdigit() or len(telefono) != 8:
+                            raise ValueError(f"Teléfono {telefono} no es válido. Debe contener 8 dígitos.")
+
+                        # Crear y agregar el usuario a la lista doblemente enlazada
+                        nuevo_usuario = Usuario(user_id, nombre, edad, email, telefono, password)
+                        usuarios.insertar(nuevo_usuario)
+                        print(f"Usuario {user_id} cargado correctamente.")
+                        
+                # Mostrar en consola los usuarios cargados
+                usuarios.imprimir_usuarios()
+
+                messagebox.showinfo("Éxito", "Usuarios cargados correctamente.")
+            except Exception as e:
+                messagebox.showerror("Error", str(e))
+
+
+    # Función para cargar productos desde uno o más archivos XML
+    def cargar_productos():
+        file_paths = filedialog.askopenfilenames(
+            filetypes=[("XML files", "*.xml")],
+            title="Seleccionar archivos XML"
+        )
+        if file_paths:
+            try:
+                for file_path in file_paths:
+                    print("Cargando productos desde:", file_path)
+                    tree = ET.parse(file_path)
+                    root = tree.getroot()
+                    for product in root.findall('producto'):
+                        id = product.get('id')
+                        nombre = product.find('nombre').text
+                        precio = float(product.find('precio').text.replace(',', ''))
+                        descripcion = product.find('descripcion').text
+                        categoria = product.find('categoria').text
+                        cantidad = int(product.find('cantidad').text)
+                        imagen = product.find('imagen').text
+
+                        # Crear y agregar el producto a la lista circular doblemente enlazada
+                        nuevo_producto = Producto(id, nombre, precio, descripcion, categoria, cantidad, imagen)
+                        productos.agregar(nuevo_producto)
+                        print(f"Producto {id} cargado correctamente.")
+                        
+                # Mostrar en consola los productos cargados
+                productos.imprimir()
+
+                messagebox.showinfo("Éxito", "Productos cargados correctamente.")
+            except Exception as e:
+                messagebox.showerror("Error", str(e))
+
+        
     admin_win = tk.Toplevel()
     admin_win.title("Ventana de Administrador")
     admin_win.geometry("600x300")
     admin_win.configure(bg="#26355D")
 
-    # Botón de cargar usuarios
-    cargar_usuarios_button = tk.Button(admin_win, text="Cargar Usuarios", font=("Comic Sans MS", 14), bg=button_bg, fg=button_fg, command=cargar_usuarios)
-    cargar_usuarios_button.pack(pady=10)
+    # Menú de opciones
+    menu_opciones = tk.Menu(admin_win)
+    admin_win.config(menu=menu_opciones)
+
+    # Opción Archivo
+    submenu_archivo = tk.Menu(menu_opciones, tearoff=0)
+    menu_opciones.add_cascade(label="Cargar", menu=submenu_archivo)
+    submenu_archivo.add_command(label="Cargar usuarios", command=cargar_usuarios)
+    submenu_archivo.add_separator()
+    submenu_archivo.add_command(label="Cargar productos ", command=cargar_productos)
 
     # Botón de salir
-    exit_button = tk.Button(admin_win, text="Salir", font=("Comic Sans MS", 14), bg=button_bg, fg=button_fg, command=admin_win.destroy)
+    exit_button = tk.Button(admin_win, text="Salir", font=("Comic Sans MS", 14), bg="#4D5F91", fg="#FFFFFF", command=admin_win.destroy)
     exit_button.pack(pady=10)
 
 # Función para la ventana de usuario
