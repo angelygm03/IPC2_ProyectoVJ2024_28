@@ -6,10 +6,13 @@ from clases.usuario import Usuario
 from lista_doble.lista_doble import ListaDoble
 from clases.producto import Producto
 from lista_dobleCircular.lista_dobleCircular import ListaDobleCircular
+from clases.empleado import Empleado
+from lista_circular.lista_circular import ListaCircularSimple
 
 # Inicializar las listas
 usuarios = ListaDoble()
 productos = ListaDobleCircular()
+empleados = ListaCircularSimple()
 
 # Función de autenticación de credenciales
 def autenticacion(username, password):
@@ -99,7 +102,35 @@ def admin_window():
             except Exception as e:
                 messagebox.showerror("Error", str(e))
 
-        
+    # Función para cargar empleados desde archivos XML
+    def cargar_empleados():
+        file_paths = filedialog.askopenfilenames(
+            filetypes=[("XML files", "*.xml")],
+            title="Seleccionar archivos XML"
+        )
+        if file_paths:
+            try:
+                for file_path in file_paths:
+                    print("Cargando empleados desde:", file_path)
+                    tree = ET.parse(file_path)
+                    root = tree.getroot()
+                    for empleado_elem in root.findall('empleado'):
+                        codigo = empleado_elem.get('codigo')
+                        nombre = empleado_elem.find('nombre').text
+                        puesto = empleado_elem.find('puesto').text
+
+                        # Crear y agregar el empleado a la lista circular simplemente enlazada
+                        nuevo_empleado = Empleado(codigo, nombre, puesto)
+                        empleados.agregar(nuevo_empleado)
+                        print(f"Empleado {codigo} cargado correctamente.")
+                        
+                # Mostrar en consola los empleados cargados
+                empleados.imprimir()
+
+                messagebox.showinfo("Éxito", "Empleados cargados correctamente.")
+            except Exception as e:
+                messagebox.showerror("Error", str(e))
+
     admin_win = tk.Toplevel()
     admin_win.title("Ventana de Administrador")
     admin_win.geometry("600x300")
@@ -115,6 +146,8 @@ def admin_window():
     submenu_archivo.add_command(label="Cargar usuarios", command=cargar_usuarios)
     submenu_archivo.add_separator()
     submenu_archivo.add_command(label="Cargar productos ", command=cargar_productos)
+    submenu_archivo.add_separator()
+    submenu_archivo.add_command(label="Cargar empleados", command=cargar_empleados)
 
     # Botón de salir
     exit_button = tk.Button(admin_win, text="Salir", font=("Comic Sans MS", 14), bg="#4D5F91", fg="#FFFFFF", command=admin_win.destroy)
