@@ -68,6 +68,11 @@ def admin_window():
             except Exception as e:
                 messagebox.showerror("Error", str(e))
 
+        # Función para generar reporte de usuarios
+    def reporte_usuarios():
+        print("Generando reporte de usuarios...")  # Mensaje de depuración
+        usuarios.graficar()
+        print("Reporte de usuarios generado.")  # Mensaje de depuración
 
     # Función para cargar productos desde uno o más archivos XML
     def cargar_productos():
@@ -148,6 +153,11 @@ def admin_window():
     submenu_archivo.add_command(label="Cargar productos ", command=cargar_productos)
     submenu_archivo.add_separator()
     submenu_archivo.add_command(label="Cargar empleados", command=cargar_empleados)
+
+    # Opción Reportes
+    submenu_analisis = tk.Menu(menu_opciones, tearoff=0)
+    menu_opciones.add_cascade(label="Reportes", menu=submenu_analisis)
+    submenu_analisis.add_command(label="Reporte de usuario", command=reporte_usuarios)
 
     # Botón de salir
     exit_button = tk.Button(admin_win, text="Salir", font=("Comic Sans MS", 14), bg="#4D5F91", fg="#FFFFFF", command=admin_win.destroy)
