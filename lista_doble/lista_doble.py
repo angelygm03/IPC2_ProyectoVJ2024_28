@@ -42,8 +42,8 @@ class ListaDoble:
         codigo_dot = ''
         ruta_directorio_dot = './reportedot'
         ruta_directorio_img = './Reportes'
-        ruta_dot = f'{ruta_directorio_dot}/lista_doble.dot'
-        ruta_imagen = f'{ruta_directorio_img}/lista_doble.png'
+        ruta_dot = f'{ruta_directorio_dot}/ListaUsuarios.dot'
+        ruta_imagen = f'{ruta_directorio_img}/ListaUsuarios.png'
 
         # Crear los directorios si no existen
         if not os.path.exists(ruta_directorio_dot):
