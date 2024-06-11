@@ -189,7 +189,7 @@ def cargar_imagen(imagen_path, width, height):
 
 # Función para la ventana de usuario
 def user_window(usuario):
-    def agregar_producto():
+    def ver_producto():
         cursor_pos = text_area.index(tk.INSERT)
         current_line = int(cursor_pos.split('.')[0])
         producto_seleccionado = text_area.get(f"{current_line}.0", f"{current_line}.end").strip()
@@ -218,14 +218,18 @@ def user_window(usuario):
 
     user_win = tk.Toplevel()
     user_win.title("Ventana de Usuario")
-    user_win.geometry("900x1000")
+    user_win.geometry("1000x500")
     user_win.configure(bg="#26355D")
 
-    tk.Label(user_win, text=f"Bienvenido, {usuario.nombre}", font=("Comic Sans MS", 16)).pack(pady=20)
+    tk.Label(user_win, text=f"Bienvenido, {usuario.nombre}", font=("Comic Sans MS", 16), bg="#26355D", fg="#FFFFFF").pack(pady=20)
+
+    # Marco para la lista de productos y detalles
+    frame = tk.Frame(user_win, bg="#26355D")
+    frame.pack(pady=20, padx=10, side=tk.LEFT)
 
     # Crear un text area para los productos
-    text_area = tk.Text(user_win, height=15, width=70, font=("Verdana", 12), bg="#FFFFFF", fg="#26355D")
-    text_area.pack(pady=20)
+    text_area = tk.Text(frame, height=20, width=40, font=("Verdana", 12), fg="#FFFFFF", bg="#3B4C7A")
+    text_area.pack(side=tk.LEFT, padx=10)
 
     # Agregar los nombres de los productos al text area
     actual = productos.primero
@@ -240,23 +244,28 @@ def user_window(usuario):
     text_area.configure(state="disabled")
 
     # Labels para mostrar los detalles del producto seleccionado
-    label_nombre = tk.Label(user_win, text="", font=("Verdana", 12), bg="#26355D", fg="#FFFFFF")
+    label_nombre = tk.Label(frame, text="", font=("Verdana", 12), bg="#26355D", fg="#FFFFFF", anchor="w", padx=10)
     label_nombre.pack(pady=5)
-    label_precio = tk.Label(user_win, text="", font=("Verdana", 12), bg="#26355D", fg="#FFFFFF")
+    label_precio = tk.Label(frame, text="", font=("Verdana", 12), bg="#26355D", fg="#FFFFFF", anchor="w", padx=10)
     label_precio.pack(pady=5)
-    label_descripcion = tk.Label(user_win, text="", font=("Verdana", 12), bg="#26355D", fg="#FFFFFF")
+    label_descripcion = tk.Label(frame, text="", font=("Verdana", 12), bg="#26355D", fg="#FFFFFF", anchor="w", padx=10)
     label_descripcion.pack(pady=5)
-    label_categoria = tk.Label(user_win, text="", font=("Verdana", 12), bg="#26355D", fg="#FFFFFF")
+    label_categoria = tk.Label(frame, text="", font=("Verdana", 12), bg="#26355D", fg="#FFFFFF", anchor="w", padx=10)
     label_categoria.pack(pady=5)
-    label_cantidad = tk.Label(user_win, text="", font=("Verdana", 12), bg="#26355D", fg="#FFFFFF")
+    label_cantidad = tk.Label(frame, text="", font=("Verdana", 12), bg="#26355D", fg="#FFFFFF", anchor="w", padx=10)
     label_cantidad.pack(pady=5)
-    # Label para mostrar la imagen del producto
-    label_imagen = tk.Label(user_win, bg="#26355D")
-    label_imagen.pack(pady=10)
 
-    # Botón para agregar producto
-    agregar_button = tk.Button(user_win, text="Agregar", font=("Comic Sans MS", 14), bg="#4D5F91", fg="#FFFFFF", command=agregar_producto)
-    agregar_button.pack(pady=10)
+    # Botón para ver producto
+    ver_button = tk.Button(frame, text="Ver Producto", font=("Comic Sans MS", 14), bg="#4D5F91", fg="#FFFFFF", command=ver_producto)
+    ver_button.pack(pady=10)
+
+    # Marco para la imagen del producto
+    image_frame = tk.Frame(user_win, bg="#26355D")
+    image_frame.pack(pady=20, padx=10, side=tk.RIGHT)
+
+    # Label para mostrar la imagen del producto
+    label_imagen = tk.Label(image_frame, bg="#26355D")
+    label_imagen.pack(pady=10)
   
 # Función de inicio de sesión
 def login():

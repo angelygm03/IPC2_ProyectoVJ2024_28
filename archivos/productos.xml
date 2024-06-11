@@ -3,7 +3,7 @@
     <producto id="IPCM-1">
         <nombre>Computadora de Escritorio</nombre>
         <precio>5,000.00</precio>
-        <descripcion>Computadora de escritorio con procesador Intel Core i7, 16 GB de RAM, 1 TB de almacenamiento y tarjeta gráfica NVIDIA GeForce RTX 2080.</descripcion>
+        <descripcion>Computadora de escritorio</descripcion>
         <categoria>Tecnología</categoria>
         <cantidad>10</cantidad>
         <imagen>C:\Users\Usuario\Documents\Ingenieria 1S 2024\IPC2 Vacas\Lab IPC2\Proyectos\IPCmarket\images\imagen1.jpg</imagen>
