@@ -6,7 +6,7 @@
         <descripcion>Computadora de escritorio con procesador Intel Core i7, 16 GB de RAM, 1 TB de almacenamiento y tarjeta gráfica NVIDIA GeForce RTX 2080.</descripcion>
         <categoria>Tecnología</categoria>
         <cantidad>10</cantidad>
-        <imagen>C:\imagenesP1IPC2\imagen1.jpg</imagen>
+        <imagen>C:\Users\Usuario\Documents\Ingenieria 1S 2024\IPC2 Vacas\Lab IPC2\Proyectos\IPCmarket\images\imagen1.jpg</imagen>
     </producto>
     <producto id="IPCM-2">
         <nombre>Frijoles</nombre>
@@ -14,6 +14,6 @@
         <descripcion> 1 libra de frijoles negros</descripcion>
         <categoria>Comida</categoria>
         <cantidad>50</cantidad>
-        <imagen>C:\imagenesP1IPC2\imagen2.jpg</imagen>
+        <imagen>C:\Users\Usuario\Documents\Ingenieria 1S 2024\IPC2 Vacas\Lab IPC2\Proyectos\IPCmarket\images\imagen2.jpg</imagen>
     </producto>
 </productos>

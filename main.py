@@ -1,5 +1,6 @@
 import tkinter as tk
-from tkinter import messagebox, filedialog
+from PIL import Image, ImageTk
+from tkinter import messagebox, filedialog, ttk
 import xml.etree.ElementTree as ET
 import re
 from clases.usuario import Usuario
@@ -99,7 +100,7 @@ def admin_window():
                         nuevo_producto = Producto(id, nombre, precio, descripcion, categoria, cantidad, imagen)
                         productos.agregar(nuevo_producto)
                         print(f"Producto {id} cargado correctamente.")
-                        
+
                 # Mostrar en consola los productos cargados
                 productos.imprimir()
 
@@ -163,16 +164,83 @@ def admin_window():
     exit_button = tk.Button(admin_win, text="Salir", font=("Comic Sans MS", 14), bg="#4D5F91", fg="#FFFFFF", command=admin_win.destroy)
     exit_button.pack(pady=10)
 
+def cargar_imagen(imagen_path, width, height):
+    imagen_original = Image.open(imagen_path)
+    imagen_redimensionada = imagen_original.resize((width, height))
+    imagen_tk = ImageTk.PhotoImage(imagen_redimensionada)
+    return imagen_tk
+
 # Función para la ventana de usuario
 def user_window(usuario):
+    def agregar_producto():
+        cursor_pos = text_area.index(tk.INSERT)
+        current_line = int(cursor_pos.split('.')[0])
+        producto_seleccionado = text_area.get(f"{current_line}.0", f"{current_line}.end").strip()
+        if producto_seleccionado:
+            actual = productos.primero
+            while actual is not None:
+                producto = actual.producto
+                if producto.nombre == producto_seleccionado:
+                    label_nombre.config(text=f"Nombre: {producto.nombre}")
+                    label_precio.config(text=f"Precio: {producto.precio}")
+                    label_descripcion.config(text=f"Descripción: {producto.descripcion}")
+                    label_categoria.config(text=f"Categoría: {producto.categoria}")
+                    label_cantidad.config(text=f"Cantidad: {producto.cantidad}")
+
+                    # Redimensionar y cargar la imagen
+                    imagen_path = producto.imagen
+                    imagen_tk = cargar_imagen(imagen_path, 200, 200)
+
+                    # Mostrar la imagen en el label
+                    label_imagen.config(image=imagen_tk)
+                    label_imagen.image = imagen_tk
+                    break
+                actual = actual.siguiente
+        else:
+            messagebox.showwarning("Error", "Por favor, seleccione un producto primero.")
+
     user_win = tk.Toplevel()
     user_win.title("Ventana de Usuario")
-    user_win.geometry("600x300")
+    user_win.geometry("900x1000")
     user_win.configure(bg="#26355D")
 
-    # ventana de usuario (pendiente de editar)
     tk.Label(user_win, text=f"Bienvenido, {usuario.nombre}", font=("Comic Sans MS", 16)).pack(pady=20)
 
+    # Crear un text area para los productos
+    text_area = tk.Text(user_win, height=15, width=70, font=("Verdana", 12), bg="#FFFFFF", fg="#26355D")
+    text_area.pack(pady=20)
+
+    # Agregar los nombres de los productos al text area
+    actual = productos.primero
+    while actual is not None:
+        producto = actual.producto
+        text_area.insert(tk.END, f"{producto.nombre}\n")
+        actual = actual.siguiente
+        if actual == productos.primero:
+            break
+
+    # Configurar el text area como solo de lectura después de agregar los productos
+    text_area.configure(state="disabled")
+
+    # Labels para mostrar los detalles del producto seleccionado
+    label_nombre = tk.Label(user_win, text="", font=("Verdana", 12), bg="#26355D", fg="#FFFFFF")
+    label_nombre.pack(pady=5)
+    label_precio = tk.Label(user_win, text="", font=("Verdana", 12), bg="#26355D", fg="#FFFFFF")
+    label_precio.pack(pady=5)
+    label_descripcion = tk.Label(user_win, text="", font=("Verdana", 12), bg="#26355D", fg="#FFFFFF")
+    label_descripcion.pack(pady=5)
+    label_categoria = tk.Label(user_win, text="", font=("Verdana", 12), bg="#26355D", fg="#FFFFFF")
+    label_categoria.pack(pady=5)
+    label_cantidad = tk.Label(user_win, text="", font=("Verdana", 12), bg="#26355D", fg="#FFFFFF")
+    label_cantidad.pack(pady=5)
+    # Label para mostrar la imagen del producto
+    label_imagen = tk.Label(user_win, bg="#26355D")
+    label_imagen.pack(pady=10)
+
+    # Botón para agregar producto
+    agregar_button = tk.Button(user_win, text="Agregar", font=("Comic Sans MS", 14), bg="#4D5F91", fg="#FFFFFF", command=agregar_producto)
+    agregar_button.pack(pady=10)
+  
 # Función de inicio de sesión
 def login():
     username = entry_username.get()

@@ -3,6 +3,11 @@ from .nodo import NodoEmpleado
 class ListaCircularSimple:
     def __init__(self):
         self.primero = None
+        self.ultimo = None
+        self.tamanio = 0
+
+    def __len__(self):
+        return self.tamanio
 
     def esta_vacia(self):
         return self.primero is None
@@ -10,11 +15,14 @@ class ListaCircularSimple:
     def agregar(self, empleado):
         nuevo_nodo = NodoEmpleado(empleado)
         if self.esta_vacia():
-            nuevo_nodo.siguiente = nuevo_nodo  # El primer nodo apunta a sí mismo
             self.primero = nuevo_nodo
+            self.ultimo = nuevo_nodo
+            self.ultimo.siguiente = self.primero
         else:
-            nuevo_nodo.siguiente = self.primero.siguiente
-            self.primero.siguiente = nuevo_nodo
+            self.ultimo.siguiente = nuevo_nodo
+            self.ultimo = nuevo_nodo
+            self.ultimo.siguiente = self.primero
+        self.tamanio += 1
 
     def imprimir(self):
         if self.esta_vacia():
