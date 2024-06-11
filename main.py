@@ -143,6 +143,12 @@ def admin_window():
             except Exception as e:
                 messagebox.showerror("Error", str(e))
 
+    # Función para generar reporte de empleados
+    def reporte_empleados():
+        print("Generando reporte de empleados...")  
+        empleados.graficar()
+        print("Reporte de empleados generado.")
+
     admin_win = tk.Toplevel()
     admin_win.title("Ventana de Administrador")
     admin_win.geometry("600x300")
@@ -167,6 +173,8 @@ def admin_window():
     submenu_analisis.add_command(label="Reporte de usuario", command=reporte_usuarios)
     submenu_analisis.add_separator()
     submenu_analisis.add_command(label="Reporte de productos", command=reporte_productos)
+    submenu_analisis.add_separator()
+    submenu_analisis.add_command(label="Reporte de empleados", command=reporte_empleados)
 
 
     # Botón de salir

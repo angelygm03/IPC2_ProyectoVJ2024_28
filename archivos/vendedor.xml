@@ -8,4 +8,12 @@
         <nombre>Alejandro de León</nombre>
         <puesto>Vendedor</puesto>
     </empleado>
+    <empleado codigo="3">
+        <nombre>Daniela Rivera</nombre>
+        <puesto>Vendedor</puesto>
+    </empleado>
+    <empleado codigo="4">
+        <nombre>Keila López</nombre>
+        <puesto>Vendedor</puesto>
+    </empleado>
 </empleados>
