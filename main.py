@@ -9,6 +9,7 @@ from clases.producto import Producto
 from lista_dobleCircular.lista_dobleCircular import ListaDobleCircular
 from clases.empleado import Empleado
 from lista_circular.lista_circular import ListaCircularSimple
+from pila.pila import Pila
 
 # Inicializar las listas
 usuarios = ListaDoble()
@@ -166,7 +167,7 @@ def admin_window():
     submenu_archivo.add_command(label="Cargar productos ", command=cargar_productos)
     submenu_archivo.add_separator()
     submenu_archivo.add_command(label="Cargar empleados", command=cargar_empleados)
-
+    
     # Opción Reportes
     submenu_analisis = tk.Menu(menu_opciones, tearoff=0)
     menu_opciones.add_cascade(label="Reportes", menu=submenu_analisis)
@@ -175,7 +176,6 @@ def admin_window():
     submenu_analisis.add_command(label="Reporte de productos", command=reporte_productos)
     submenu_analisis.add_separator()
     submenu_analisis.add_command(label="Reporte de empleados", command=reporte_empleados)
-
 
     # Botón de salir
     exit_button = tk.Button(admin_win, text="Salir", font=("Comic Sans MS", 14), bg="#4D5F91", fg="#FFFFFF", command=admin_win.destroy)
@@ -189,6 +189,8 @@ def cargar_imagen(imagen_path, width, height):
 
 # Función para la ventana de usuario
 def user_window(usuario):
+    carrito = Pila()
+    
     def ver_producto():
         cursor_pos = text_area.index(tk.INSERT)
         current_line = int(cursor_pos.split('.')[0])
@@ -213,8 +215,65 @@ def user_window(usuario):
                     label_imagen.image = imagen_tk
                     break
                 actual = actual.siguiente
+                if actual == productos.primero:
+                    break
         else:
             messagebox.showwarning("Error", "Por favor, seleccione un producto primero.")
+
+    def agregar_al_carrito():
+        cantidad = cantidad_entry.get()
+        if not cantidad.isdigit() or int(cantidad) <= 0:
+            messagebox.showwarning("Error", "Ingrese una cantidad válida.")
+            return
+
+        cantidad = int(cantidad)
+        producto_seleccionado = label_nombre.cget("text").replace("Nombre: ", "").strip()
+        
+        if not producto_seleccionado:
+            messagebox.showwarning("Error", "Seleccione un producto primero.")
+            return
+
+        actual = productos.primero
+        while actual is not None:
+            producto = actual.producto
+            if producto.nombre == producto_seleccionado:
+                if cantidad > producto.cantidad:
+                    messagebox.showwarning("Error", "Cantidad no disponible.")
+                    return
+                else:
+                    carrito.push(producto.nombre, producto.precio, cantidad)
+                    messagebox.showinfo("Éxito", f"{producto.nombre} agregado al carrito.")
+                    return
+            actual = actual.siguiente
+            if actual == productos.primero:
+                break
+
+    def ver_carrito():
+        if carrito.isEmpty():
+            messagebox.showinfo("Carrito vacío", "No hay productos en el carrito.")
+            return
+        carrito.graficar()
+
+
+    def confirmar_compra():
+        if carrito.isEmpty():
+            messagebox.showwarning("Error", "No has agregado productos.")
+        else:
+            messagebox.showinfo("Compra en proceso", "Tu compra está siendo procesada.")
+            while not carrito.isEmpty():
+                producto = carrito.pop()
+                # lógica pendiente para decrementar la cantidad disponible de producto
+
+            text_area.configure(state="normal")
+            text_area.delete("1.0", tk.END)
+            actual = productos.primero
+            while actual is not None:
+                producto = actual.producto
+                text_area.insert(tk.END, f"{producto.nombre}\n")
+                actual = actual.siguiente
+                if actual == productos.primero:
+                    break
+            text_area.configure(state="disabled")
 
     user_win = tk.Toplevel()
     user_win.title("Ventana de Usuario")
@@ -256,8 +315,14 @@ def user_window(usuario):
     label_cantidad.pack(pady=5)
 
     # Botón para ver producto
-    ver_button = tk.Button(frame, text="Ver Producto", font=("Comic Sans MS", 14), bg="#4D5F91", fg="#FFFFFF", command=ver_producto)
+    ver_button = tk.Button(frame, text="Ver Producto", font=("Comic Sans MS", 12), bg="#4D5F91", fg="#FFFFFF", command=ver_producto)
     ver_button.pack(pady=10)
+
+    # Label y entrada de texto para la cantidad
+    cantidad_label = tk.Label(frame, text="Cantidad a agregar al carrito:", font=("Comic Sans MS", 12), bg="#26355D", fg="#FFFFFF")
+    cantidad_label.pack(pady=5)
+    cantidad_entry = tk.Entry(frame, font=("Verdana", 12), bg="#3B4C7A", fg="#FFFFFF")
+    cantidad_entry.pack(pady=5)
 
     # Marco para la imagen del producto
     image_frame = tk.Frame(user_win, bg="#26355D")
@@ -266,6 +331,19 @@ def user_window(usuario):
     # Label para mostrar la imagen del producto
     label_imagen = tk.Label(image_frame, bg="#26355D")
     label_imagen.pack(pady=10)
+
+    # Botón para agregar al carrito
+    agregar_carrito_button = tk.Button(frame, text="Agregar al Carrito", font=("Comic Sans MS", 12), bg="#4D5F91", fg="#FFFFFF", command=agregar_al_carrito)
+    agregar_carrito_button.pack(pady=10, side=tk.LEFT)
+
+    # Botón para ver carrito
+    ver_carrito_button = tk.Button(frame, text="Ver Carrito", font=("Comic Sans MS", 12), bg="#4D5F91", fg="#FFFFFF", command=ver_carrito)
+    ver_carrito_button.pack(pady=10, side=tk.LEFT)
+
+    # Botón para confirmar compra
+    confirmar_compra_button = tk.Button(frame, text="Confirmar Compra", font=("Comic Sans MS", 12), bg="#4D5F91", fg="#FFFFFF", command=confirmar_compra)
+    confirmar_compra_button.pack(pady=10, side=tk.LEFT)
+
   
 # Función de inicio de sesión
 def login():
