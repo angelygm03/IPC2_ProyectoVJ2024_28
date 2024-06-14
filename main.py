@@ -3,6 +3,7 @@ from PIL import Image, ImageTk
 from tkinter import messagebox, filedialog, ttk
 import xml.etree.ElementTree as ET
 import re
+import textwrap
 from clases.usuario import Usuario
 from lista_doble.lista_doble import ListaDoble
 from clases.producto import Producto
@@ -16,6 +17,8 @@ from cola.cola import Cola
 usuarios = ListaDoble()
 productos = ListaDobleCircular()
 empleados = ListaCircularSimple()
+carrito = Pila()
+cola_solicitudes = Cola()
 
 # Función de autenticación de credenciales
 def autenticacion(username, password):
@@ -153,12 +156,31 @@ def admin_window():
 
     admin_win = tk.Toplevel()
     admin_win.title("Ventana de Administrador")
-    admin_win.geometry("600x300")
+    admin_win.geometry("700x400")
     admin_win.configure(bg="#26355D")
 
     # Menú de opciones
     menu_opciones = tk.Menu(admin_win)
     admin_win.config(menu=menu_opciones)
+
+    # Frame para mostrar la cola de solicitudes de compra
+    cola_frame = tk.Frame(admin_win, bg="#26355D")
+    cola_frame.pack(pady=20)
+
+    # Text area para mostrar las solicitudes de compra
+    solicitudes_text = tk.Text(cola_frame, height=15, width=80, font=("Verdana", 12), fg="#FFFFFF", bg="#3B4C7A")
+    solicitudes_text.pack(padx=10, pady=10)
+
+    # Botón para actualizar la lista de solicitudes
+    def actualizar_solicitudes():
+        solicitudes_text.delete(1.0, tk.END) 
+        cola_solicitudes.mostrar_en_text_area(solicitudes_text)
+
+    actualizar_button = tk.Button(cola_frame, text="Actualizar Solicitudes", font=("Comic Sans MS", 12), bg="#4D5F91", fg="#FFFFFF", command=actualizar_solicitudes)
+    actualizar_button.pack(pady=10)
+
+    # Mostrar las solicitudes actuales al iniciar la ventana
+    actualizar_solicitudes()
 
     # Opción Archivo
     submenu_archivo = tk.Menu(menu_opciones, tearoff=0)
@@ -190,8 +212,6 @@ def cargar_imagen(imagen_path, width, height):
 
 # Función para la ventana de usuario
 def user_window(usuario):
-    carrito = Pila()
-    cola_solicitudes = Cola()
 
     def ver_producto():
         cursor_pos = text_area.index(tk.INSERT)
@@ -203,10 +223,10 @@ def user_window(usuario):
                 producto = actual.producto
                 if producto.nombre == producto_seleccionado:
                     label_nombre.config(text=f"Nombre: {producto.nombre}")
-                    label_precio.config(text=f"Precio: {producto.precio}")
-                    label_descripcion.config(text=f"Descripción: {producto.descripcion}")
+                    descripcion_formateada = textwrap.fill(producto.descripcion, width=50)
+                    label_descripcion.config(text=f"Descripción:\n{descripcion_formateada}")
                     label_categoria.config(text=f"Categoría: {producto.categoria}")
-                    label_cantidad.config(text=f"Cantidad: {producto.cantidad}")
+                    label_cantidad.config(text=f"Cantidad disponible: {producto.cantidad}")
 
                     # Redimensionar y cargar la imagen
                     imagen_path = producto.imagen
@@ -275,7 +295,7 @@ def user_window(usuario):
 
     user_win = tk.Toplevel()
     user_win.title("Ventana de Usuario")
-    user_win.geometry("1000x500")
+    user_win.geometry("1100x600")
     user_win.configure(bg="#26355D")
 
     tk.Label(user_win, text=f"Bienvenido, {usuario.nombre}", font=("Comic Sans MS", 16), bg="#26355D", fg="#FFFFFF").pack(pady=20)
@@ -285,7 +305,7 @@ def user_window(usuario):
     frame.pack(pady=20, padx=10, side=tk.LEFT)
 
     # Crear un text area para los productos
-    text_area = tk.Text(frame, height=20, width=40, font=("Verdana", 12), fg="#FFFFFF", bg="#3B4C7A")
+    text_area = tk.Text(frame, height=20, width=35, font=("Verdana", 12), fg="#FFFFFF", bg="#3B4C7A")
     text_area.pack(side=tk.LEFT, padx=10)
 
     # Agregar los nombres de los productos al text area

@@ -1,5 +1,6 @@
 from cola.nodo import Nodo
-import os 
+import os
+import tkinter as tk
 
 class Cola:
     def __init__(self):
@@ -49,3 +50,17 @@ class Cola:
 
     def isEmpty(self):
         return self.primero is None
+
+    def mostrar_en_text_area(self, text_area):
+        text_area.delete(1.0, tk.END)
+        if self.primero is None:
+            text_area.insert(tk.END, "No hay solicitudes pendientes.")
+            return
+        actual = self.primero
+        while actual is not None:
+            text_area.insert(tk.END, f"ID Usuario: {actual.id_usuario}\n")
+            text_area.insert(tk.END, f"Nombre Usuario: {actual.nombre_usuario}\n")
+            text_area.insert(tk.END, f"Productos:\n{actual.productos}\n")
+            text_area.insert(tk.END, f"Total: {actual.total}\n")
+            text_area.insert(tk.END, "\n--------------------------------\n")
+            actual = actual.siguiente

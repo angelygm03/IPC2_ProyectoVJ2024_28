@@ -1,5 +1,0 @@
-digraph G {
-    rankdir=LR;
-    node[shape=Mrecord];
-Nodo[xlabel = Carrito label = "Producto: Cereal, Precio: 22.0, Cantidad: 2 |Producto: Leche Dos Pinos, Precio: 17.5, Cantidad: 4"];
-}
