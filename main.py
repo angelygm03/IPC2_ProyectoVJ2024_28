@@ -251,13 +251,11 @@ def user_window(usuario):
             if actual == productos.primero:
                 break
 
-
     def ver_carrito():
         if carrito.isEmpty():
             messagebox.showinfo("Carrito vacío", "No hay productos en el carrito.")
             return
-        carrito.graficar()
-
+        carrito.graficar(usuario.id)
 
     def confirmar_compra():
         if carrito.isEmpty():

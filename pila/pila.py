@@ -43,15 +43,15 @@ class Pila:
             print(f"Producto: {actual.nombre_producto}, Precio: {actual.precio_producto}, Cantidad: {actual.cantidad_producto}")
             actual = actual.abajo
 
-    def graficar(self):
+    def graficar(self, usuario_id):
         if self.isEmpty():
             print('Pila vacía')
             return
         codigodot = ''
         ruta_directorio_dot = './reportedot'
         ruta_directorio_img = './Reportes'
-        ruta_dot = f'{ruta_directorio_dot}/Pila.dot'
-        ruta_imagen = f'{ruta_directorio_img}/Pila.png'
+        ruta_dot = f'{ruta_directorio_dot}/Pila{usuario_id}.dot'
+        ruta_imagen = f'{ruta_directorio_img}/Pila{usuario_id}.png'
 
         if not os.path.exists(ruta_directorio_dot):
             os.makedirs(ruta_directorio_dot)

@@ -1,0 +1,5 @@
+digraph G {
+    rankdir=LR;
+    node[shape=Mrecord];
+Nodo[xlabel = Carrito label = "Producto: Computadora de Escritorio, Precio: 5000.0, Cantidad: 1"];
+}
