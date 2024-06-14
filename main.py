@@ -10,6 +10,7 @@ from lista_dobleCircular.lista_dobleCircular import ListaDobleCircular
 from clases.empleado import Empleado
 from lista_circular.lista_circular import ListaCircularSimple
 from pila.pila import Pila
+from cola.cola import Cola
 
 # Inicializar las listas
 usuarios = ListaDoble()
@@ -190,7 +191,8 @@ def cargar_imagen(imagen_path, width, height):
 # Función para la ventana de usuario
 def user_window(usuario):
     carrito = Pila()
-    
+    cola_solicitudes = Cola()
+
     def ver_producto():
         cursor_pos = text_area.index(tk.INSERT)
         current_line = int(cursor_pos.split('.')[0])
@@ -242,11 +244,13 @@ def user_window(usuario):
                     return
                 else:
                     carrito.push(producto.nombre, producto.precio, cantidad)
+                    carrito.mostrar()
                     messagebox.showinfo("Éxito", f"{producto.nombre} agregado al carrito.")
                     return
             actual = actual.siguiente
             if actual == productos.primero:
                 break
+
 
     def ver_carrito():
         if carrito.isEmpty():
@@ -258,22 +262,18 @@ def user_window(usuario):
     def confirmar_compra():
         if carrito.isEmpty():
             messagebox.showwarning("Error", "No has agregado productos.")
-        else:
-            messagebox.showinfo("Compra en proceso", "Tu compra está siendo procesada.")
-            while not carrito.isEmpty():
-                producto = carrito.pop()
-                # lógica pendiente para decrementar la cantidad disponible de producto
-
-            text_area.configure(state="normal")
-            text_area.delete("1.0", tk.END)
-            actual = productos.primero
-            while actual is not None:
-                producto = actual.producto
-                text_area.insert(tk.END, f"{producto.nombre}\n")
-                actual = actual.siguiente
-                if actual == productos.primero:
-                    break
-            text_area.configure(state="disabled")
+            return
+        
+        productos_compra = ""
+        total = 0
+        while not carrito.isEmpty():
+            producto = carrito.pop()
+            productos_compra += f"Producto: {producto.nombre_producto}, Precio: {producto.precio_producto}, Cantidad: {producto.cantidad_producto}\n"
+            total += producto.precio_producto * producto.cantidad_producto
+        cola_solicitudes.enqueue(usuario.id, usuario.nombre, productos_compra, total)
+        print("Compra confirmada, productos en la cola de solicitudes:")
+        cola_solicitudes.mostrar() 
+        messagebox.showinfo("Solicitud en proceso", "Tu compra se encuentra en proceso, por favor espera.")
 
     user_win = tk.Toplevel()
     user_win.title("Ventana de Usuario")

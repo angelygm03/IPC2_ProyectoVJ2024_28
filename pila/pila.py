@@ -7,9 +7,9 @@ class Pila:
         self.tamanio = 0
 
     def push(self, nombre_producto, precio_producto, cantidad_producto):
-        nuevo = Nodo(nombre_producto, precio_producto, cantidad_producto)
-        nuevo.abajo = self.cima
-        self.cima = nuevo
+        nuevo_nodo = Nodo(nombre_producto, precio_producto, cantidad_producto)
+        nuevo_nodo.abajo = self.cima
+        self.cima = nuevo_nodo
         self.tamanio += 1
 
     def pop(self):
@@ -29,17 +29,18 @@ class Pila:
 
     def isEmpty(self):
         return self.cima is None
-
+    
     def __len__(self):
         return self.tamanio
 
     def mostrar(self):
-        if self.isEmpty():
+        if self.cima is None:
             print('Pila vacía')
             return
         actual = self.cima
+        print("Productos en el carrito:")
         while actual is not None:
-            print(f"Usuario: {actual.nombre_usuario}, Producto: {actual.nombre_producto}, Precio: {actual.precio_producto}, Cantidad: {actual.cantidad_producto}")
+            print(f"Producto: {actual.nombre_producto}, Precio: {actual.precio_producto}, Cantidad: {actual.cantidad_producto}")
             actual = actual.abajo
 
     def graficar(self):
@@ -80,11 +81,3 @@ class Pila:
 
         ruta_salida2 = os.path.abspath(ruta_imagen)
         os.startfile(ruta_salida2)
-
-    def retornarpila(self):
-        cadena = ''
-        actual = self.cima
-        while actual is not None:
-            cadena += f"Usuario: {actual.nombre_usuario}, Producto: {actual.nombre_producto}, Precio: {actual.precio_producto}, Cantidad: {actual.cantidad_producto}, "
-            actual = actual.abajo
-        return cadena
