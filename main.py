@@ -161,6 +161,12 @@ def admin_window():
         print("Generando reporte de compras...")  
         compras_aceptadas.graficar()
         print("Reporte de compras generado.")
+    
+    #Función para generar reporte de solicitudes de compra
+    def reporte_solicitudes():
+        print("Generando reporte de solicitudes de compra...")  
+        cola_solicitudes.graficar()
+        print("Reporte de solicitudes de compra generado.")
 
     admin_win = tk.Toplevel()
     admin_win.title("Ventana de Administrador")
@@ -237,6 +243,8 @@ def admin_window():
     submenu_analisis.add_command(label="Reporte de productos", command=reporte_productos)
     submenu_analisis.add_separator()
     submenu_analisis.add_command(label="Reporte de empleados", command=reporte_empleados)
+    submenu_analisis.add_separator()
+    submenu_analisis.add_command(label="Reporte de solicitudes", command=reporte_solicitudes)
     submenu_analisis.add_separator()
     submenu_analisis.add_command(label="Reporte de compras", command=reporte_compras)
 
@@ -328,7 +336,7 @@ def user_window(usuario):
         while not carrito.isEmpty():
             producto = carrito.pop()
             productos_compra += f"Producto: {producto.nombre_producto}, Precio: {producto.precio_producto}, Cantidad: {producto.cantidad_producto} \n"
-            total += producto.precio_producto * producto.cantidad_producto
+            total += round(producto.precio_producto * producto.cantidad_producto, 2)
         cola_solicitudes.enqueue(usuario.id, usuario.nombre, productos_compra, total)
         print("Compra confirmada, productos en la cola de solicitudes:")
         cola_solicitudes.mostrar() 

@@ -64,3 +64,43 @@ class Cola:
             text_area.insert(tk.END, f"Total: {actual.total}\n")
             text_area.insert(tk.END, "\n---------------------------------------------------\n")
             actual = actual.siguiente
+    
+    def graficar(self):
+        codigodot = ''
+        ruta_directorio_dot = './reportedot'
+        ruta_directorio_img = './Reportes'
+        ruta_dot = f'{ruta_directorio_dot}/ColaSolicitudesCompra.dot'
+        ruta_imagen = f'{ruta_directorio_img}/ColaSolicitudesCompra.png'
+
+        if not os.path.exists(ruta_directorio_dot):
+            os.makedirs(ruta_directorio_dot)
+        if not os.path.exists(ruta_directorio_img):
+            os.makedirs(ruta_directorio_img)
+
+        archivo = open(ruta_dot, 'w')
+        codigodot += '''digraph G {
+    rankdir="RL";
+    label="Solicitudes de Compra";
+    node[shape=box];'''
+
+        contador = 0
+        actual = self.primero
+        conexiones = ''
+        nodos = ''
+        while actual != None:
+            nodos += f'Nodo{contador}[label="ID: {actual.id_usuario}\\nNombre: {actual.nombre_usuario}\\nProductos: {actual.productos}\\nTotal: Q{actual.total}"];\n'
+            if actual.siguiente != None:
+                conexiones += f'Nodo{contador+1} -> Nodo{contador};\n'
+            contador += 1
+            actual = actual.siguiente
+        
+        codigodot += nodos + "\n" + conexiones + '\n}'
+
+        archivo.write(codigodot)
+        archivo.close()
+
+        comando = f'dot -Tpng {ruta_dot} -o {ruta_imagen}'
+        os.system(comando)
+
+        ruta_salida2 = os.path.abspath(ruta_imagen)
+        os.startfile(ruta_salida2)
