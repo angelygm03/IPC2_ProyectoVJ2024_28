@@ -62,5 +62,5 @@ class Cola:
             text_area.insert(tk.END, f"Nombre Usuario: {actual.nombre_usuario}\n")
             text_area.insert(tk.END, f"Productos:\n{actual.productos}\n")
             text_area.insert(tk.END, f"Total: {actual.total}\n")
-            text_area.insert(tk.END, "\n--------------------------------\n")
+            text_area.insert(tk.END, "\n---------------------------------------------------\n")
             actual = actual.siguiente

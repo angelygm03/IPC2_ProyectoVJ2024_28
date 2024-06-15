@@ -10,6 +10,7 @@ from clases.producto import Producto
 from lista_dobleCircular.lista_dobleCircular import ListaDobleCircular
 from clases.empleado import Empleado
 from lista_circular.lista_circular import ListaCircularSimple
+from lista_simple.lista_simple import ListaSimple
 from pila.pila import Pila
 from cola.cola import Cola
 
@@ -19,6 +20,7 @@ productos = ListaDobleCircular()
 empleados = ListaCircularSimple()
 carrito = Pila()
 cola_solicitudes = Cola()
+compras_aceptadas = ListaSimple()
 
 # Función de autenticación de credenciales
 def autenticacion(username, password):
@@ -154,6 +156,12 @@ def admin_window():
         empleados.graficar()
         print("Reporte de empleados generado.")
 
+    # Función para generar reporte de compras
+    def reporte_compras():
+        print("Generando reporte de compras...")  
+        compras_aceptadas.graficar()
+        print("Reporte de compras generado.")
+
     admin_win = tk.Toplevel()
     admin_win.title("Ventana de Administrador")
     admin_win.geometry("700x400")
@@ -179,7 +187,37 @@ def admin_window():
     actualizar_button = tk.Button(cola_frame, text="Actualizar Solicitudes", font=("Comic Sans MS", 12), bg="#4D5F91", fg="#FFFFFF", command=actualizar_solicitudes)
     actualizar_button.pack(pady=10)
 
-    # Mostrar las solicitudes actuales al iniciar la ventana
+    def aceptar_solicitud():
+        solicitud = cola_solicitudes.dequeue()
+        if solicitud:
+            # Extraer los atributos del nodo solicitud
+            usuario_id = solicitud.id_usuario
+            nombre_usuario = solicitud.nombre_usuario
+            productos = solicitud.productos
+            total = solicitud.total
+            
+            # Insertar en la lista de compras aceptadas
+            compras_aceptadas.insertar(usuario_id, nombre_usuario, productos, total)
+            print("Solicitud aceptada:")
+            compras_aceptadas.mostrar()
+            actualizar_solicitudes()
+
+
+    def rechazar_solicitud():
+        solicitud = cola_solicitudes.dequeue()
+        if solicitud:
+            print("Solicitud rechazada.")
+            actualizar_solicitudes()
+
+    # Botones Aceptar y Rechazar
+    botones_frame = tk.Frame(admin_win, bg="#26355D")
+    botones_frame.pack(pady=10)
+
+    aceptar_button = tk.Button(botones_frame, text="Aceptar", font=("Comic Sans MS", 12), bg="#4D5F91", fg="#FFFFFF", command=aceptar_solicitud)
+    aceptar_button.grid(row=0, column=0, padx=10)
+
+    rechazar_button = tk.Button(botones_frame, text="Rechazar", font=("Comic Sans MS", 12), bg="#4D5F91", fg="#FFFFFF", command=rechazar_solicitud)
+    rechazar_button.grid(row=0, column=1, padx=10)
     actualizar_solicitudes()
 
     # Opción Archivo
@@ -199,6 +237,8 @@ def admin_window():
     submenu_analisis.add_command(label="Reporte de productos", command=reporte_productos)
     submenu_analisis.add_separator()
     submenu_analisis.add_command(label="Reporte de empleados", command=reporte_empleados)
+    submenu_analisis.add_separator()
+    submenu_analisis.add_command(label="Reporte de compras", command=reporte_compras)
 
     # Botón de salir
     exit_button = tk.Button(admin_win, text="Salir", font=("Comic Sans MS", 14), bg="#4D5F91", fg="#FFFFFF", command=admin_win.destroy)
@@ -227,6 +267,7 @@ def user_window(usuario):
                     label_descripcion.config(text=f"Descripción:\n{descripcion_formateada}")
                     label_categoria.config(text=f"Categoría: {producto.categoria}")
                     label_cantidad.config(text=f"Cantidad disponible: {producto.cantidad}")
+                    label_precio.config(text=f"Precio: Q{producto.precio}")
 
                     # Redimensionar y cargar la imagen
                     imagen_path = producto.imagen
@@ -286,7 +327,7 @@ def user_window(usuario):
         total = 0
         while not carrito.isEmpty():
             producto = carrito.pop()
-            productos_compra += f"Producto: {producto.nombre_producto}, Precio: {producto.precio_producto}, Cantidad: {producto.cantidad_producto}\n"
+            productos_compra += f"Producto: {producto.nombre_producto}, Precio: {producto.precio_producto}, Cantidad: {producto.cantidad_producto} \n"
             total += producto.precio_producto * producto.cantidad_producto
         cola_solicitudes.enqueue(usuario.id, usuario.nombre, productos_compra, total)
         print("Compra confirmada, productos en la cola de solicitudes:")
