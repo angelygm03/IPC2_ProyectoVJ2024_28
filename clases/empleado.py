@@ -3,3 +3,6 @@ class Empleado:
         self.codigo = codigo
         self.nombre = nombre
         self.puesto = puesto
+
+    def obtener_nombre(self):
+        return self.nombre

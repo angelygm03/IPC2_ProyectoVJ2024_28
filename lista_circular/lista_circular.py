@@ -25,6 +25,19 @@ class ListaCircularSimple:
             self.ultimo.siguiente = self.primero
         self.tamanio += 1
 
+    # obtener el nombre de un empleado por su código
+    def obtener_nombre(self, codigo):
+        if self.esta_vacia():
+            return None
+        actual = self.primero
+        while True:
+            if actual.empleado.codigo == codigo:
+                return actual.empleado.nombre
+            actual = actual.siguiente
+            if actual == self.primero:
+                break
+        return None
+
     def imprimir(self):
         if self.esta_vacia():
             print("La lista de empleados está vacía")
@@ -43,14 +56,11 @@ class ListaCircularSimple:
         # Crear los directorios si no existen
         os.makedirs('reportedot', exist_ok=True)
         os.makedirs('Reportes', exist_ok=True)
-        
-        # Abrir el archivo en modo escritura con codificación UTF-8
         with open('reportedot/ListaVendedores.dot', 'w', encoding='utf-8') as archivo:
             codigo_dot = '''digraph G {
   rankdir=LR;
   node [shape = record, height = .1]\n'''
             
-            # Crear los nodos con los detalles de los empleados y un campo vacío adicional
             contador_nodos = 0
             actual = self.primero
             while contador_nodos < self.tamanio:
@@ -71,16 +81,12 @@ class ListaCircularSimple:
             codigo_dot += f'node{self.tamanio - 1} -> node0 [constraint=false];\n'
 
             codigo_dot += '}'
-
-            # Escribir el contenido DOT en el archivo
             archivo.write(codigo_dot)
-
-        # Generar la imagen
+            
         ruta_dot = 'reportedot/ListaVendedores.dot'
         ruta_imagen = 'Reportes/ListaVendedores.png'
         comando = f'dot -Tpng {ruta_dot} -o {ruta_imagen}'
         os.system(comando)
 
-        # Abrir la imagen
         ruta_reporte2 = os.path.abspath(ruta_imagen)
         os.startfile(ruta_reporte2)

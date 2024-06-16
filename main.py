@@ -4,6 +4,7 @@ from tkinter import messagebox, filedialog, ttk
 import xml.etree.ElementTree as ET
 import re
 import textwrap
+import datetime
 from clases.usuario import Usuario
 from lista_doble.lista_doble import ListaDoble
 from clases.producto import Producto
@@ -13,6 +14,8 @@ from lista_circular.lista_circular import ListaCircularSimple
 from lista_simple.lista_simple import ListaSimple
 from pila.pila import Pila
 from cola.cola import Cola
+from clases.actividad import Actividad
+from matriz_dispersa.matriz_dispersa import MatrizDispersa
 
 # Inicializar las listas
 usuarios = ListaDoble()
@@ -21,6 +24,7 @@ empleados = ListaCircularSimple()
 carrito = Pila()
 cola_solicitudes = Cola()
 compras_aceptadas = ListaSimple()
+actividades = MatrizDispersa()
 
 # Función de autenticación de credenciales
 def autenticacion(username, password):
@@ -150,6 +154,68 @@ def admin_window():
             except Exception as e:
                 messagebox.showerror("Error", str(e))
 
+    def dias_de_la_semana(dia_semana):
+        if dia_semana == 1:
+            return "lunes"
+        elif dia_semana == 2:
+            return "martes"
+        elif dia_semana == 3:
+            return "miércoles"
+        elif dia_semana == 4:
+            return "jueves"
+        elif dia_semana == 5:
+            return "viernes"
+        elif dia_semana == 6:
+            return "sábado"
+        elif dia_semana == 7:
+            return "domingo"
+        else:
+            return "Día no válido"
+    
+    #Función para cargar y parsear el xml de actividades
+    def cargar_actividades():
+        file_paths = filedialog.askopenfilenames(
+            filetypes=[("XML files", "*.xml")],
+            title="Seleccionar archivos XML"
+        )
+        if file_paths:
+            try:
+                for file_path in file_paths:
+                    print("Cargando actividades desde:", file_path)
+                    tree = ET.parse(file_path)
+                    root = tree.getroot()
+                    for actividad in root.findall('actividad'):
+                        id = actividad.get('id')
+                        nombre = actividad.find('nombre').text
+                        descripcion = actividad.find('descripcion').text
+
+                        # Obtener día de la semana y hora
+                        dia = actividad.find('dia')
+                        if dia is None:
+                            raise ValueError("El elemento <dia> no está definido para la actividad.")
+                        
+                        dia_semana = int(dia.text)
+                        hora = int(dia.get('hora'))
+
+                        # Convertir el día de la semana a nombre
+                        dia_nombre = dias_de_la_semana(dia_semana)
+
+                        # Obtener el nombre del empleado asignado a la actividad mediante la lista circular
+                        empleado_id = actividad.find('empleado').text
+                        empleado_nombre = empleados.obtener_nombre(empleado_id)
+
+                        # Insertar actividad en la matriz dispersa
+                        dato_actividad = f"{id}, {nombre}, {empleado_nombre}, {dia_nombre}, {hora} hrs."
+                        actividades.insertar(hora, dia_semana, dato_actividad)
+                        print(f"Actividad {id} cargada correctamente.")
+                    
+                    actividades.imprimir()
+
+                messagebox.showinfo("Éxito", "Actividades cargadas correctamente.")
+            except Exception as e:
+                messagebox.showerror("Error", str(e))
+
+
     # Función para generar reporte de empleados
     def reporte_empleados():
         print("Generando reporte de empleados...")  
@@ -167,6 +233,12 @@ def admin_window():
         print("Generando reporte de solicitudes de compra...")  
         cola_solicitudes.graficar()
         print("Reporte de solicitudes de compra generado.")
+    
+    #Función para generar reporte de actividades
+    def reporte_actividades():
+        print("Generando reporte de actividades...")  
+        actividades.graficar()
+        print("Reporte de actividades generado.")
 
     admin_win = tk.Toplevel()
     admin_win.title("Ventana de Administrador")
@@ -234,19 +306,23 @@ def admin_window():
     submenu_archivo.add_command(label="Cargar productos ", command=cargar_productos)
     submenu_archivo.add_separator()
     submenu_archivo.add_command(label="Cargar empleados", command=cargar_empleados)
+    submenu_archivo.add_separator()
+    submenu_archivo.add_command(label="Cargar actividades", command=cargar_actividades)
     
     # Opción Reportes
-    submenu_analisis = tk.Menu(menu_opciones, tearoff=0)
-    menu_opciones.add_cascade(label="Reportes", menu=submenu_analisis)
-    submenu_analisis.add_command(label="Reporte de usuario", command=reporte_usuarios)
-    submenu_analisis.add_separator()
-    submenu_analisis.add_command(label="Reporte de productos", command=reporte_productos)
-    submenu_analisis.add_separator()
-    submenu_analisis.add_command(label="Reporte de empleados", command=reporte_empleados)
-    submenu_analisis.add_separator()
-    submenu_analisis.add_command(label="Reporte de solicitudes", command=reporte_solicitudes)
-    submenu_analisis.add_separator()
-    submenu_analisis.add_command(label="Reporte de compras", command=reporte_compras)
+    submenu_reportes = tk.Menu(menu_opciones, tearoff=0)
+    menu_opciones.add_cascade(label="Reportes", menu=submenu_reportes)
+    submenu_reportes.add_command(label="Reporte de usuario", command=reporte_usuarios)
+    submenu_reportes.add_separator()
+    submenu_reportes.add_command(label="Reporte de productos", command=reporte_productos)
+    submenu_reportes.add_separator()
+    submenu_reportes.add_command(label="Reporte de empleados", command=reporte_empleados)
+    submenu_reportes.add_separator()
+    submenu_reportes.add_command(label="Reporte de solicitudes", command=reporte_solicitudes)
+    submenu_reportes.add_separator()
+    submenu_reportes.add_command(label="Reporte de compras", command=reporte_compras)
+    submenu_reportes.add_separator()
+    submenu_reportes.add_command(label="Reporte de actividades", command=reporte_actividades)
 
     # Botón de salir
     exit_button = tk.Button(admin_win, text="Salir", font=("Comic Sans MS", 14), bg="#4D5F91", fg="#FFFFFF", command=admin_win.destroy)
@@ -343,7 +419,7 @@ def user_window(usuario):
         messagebox.showinfo("Solicitud en proceso", "Tu compra se encuentra en proceso, por favor espera.")
 
     user_win = tk.Toplevel()
-    user_win.title("Ventana de Usuario")
+    user_win.title("Bienvenido a IPCmarket")
     user_win.geometry("1100x600")
     user_win.configure(bg="#26355D")
 
