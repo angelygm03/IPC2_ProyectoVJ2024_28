@@ -4,7 +4,6 @@ from tkinter import messagebox, filedialog, ttk
 import xml.etree.ElementTree as ET
 import re
 import textwrap
-import datetime
 from clases.usuario import Usuario
 from lista_doble.lista_doble import ListaDoble
 from clases.producto import Producto
@@ -28,6 +27,11 @@ actividades = MatrizDispersa()
 
 # Función de autenticación de credenciales
 def autenticacion(username, password):
+    # Verificar si las credenciales corresponden al administrador
+    if username == admin_username and password == admin_password:
+        return 'admin'
+    
+    # Buscar en la lista de usuarios
     actual = usuarios.cabeza
     while actual is not None:
         if actual.usuario.id == username and actual.usuario.password == password:
@@ -242,7 +246,7 @@ def admin_window():
 
     admin_win = tk.Toplevel()
     admin_win.title("Ventana de Administrador")
-    admin_win.geometry("700x400")
+    admin_win.geometry("900x450")
     admin_win.configure(bg="#26355D")
 
     # Menú de opciones
@@ -251,7 +255,7 @@ def admin_window():
 
     # Frame para mostrar la cola de solicitudes de compra
     cola_frame = tk.Frame(admin_win, bg="#26355D")
-    cola_frame.pack(pady=20)
+    cola_frame.pack(pady=10)
 
     # Text area para mostrar las solicitudes de compra
     solicitudes_text = tk.Text(cola_frame, height=15, width=80, font=("Verdana", 12), fg="#FFFFFF", bg="#3B4C7A")
@@ -325,8 +329,8 @@ def admin_window():
     submenu_reportes.add_command(label="Reporte de actividades", command=reporte_actividades)
 
     # Botón de salir
-    exit_button = tk.Button(admin_win, text="Salir", font=("Comic Sans MS", 14), bg="#4D5F91", fg="#FFFFFF", command=admin_win.destroy)
-    exit_button.pack(pady=10)
+    #exit_button = tk.Button(admin_win, text="Salir", font=("Comic Sans MS", 14), bg="#4D5F91", fg="#FFFFFF", command=admin_win.destroy)
+    #exit_button.pack(pady=10)
 
 def cargar_imagen(imagen_path, width, height):
     imagen_original = Image.open(imagen_path)
@@ -487,7 +491,11 @@ def user_window(usuario):
     confirmar_compra_button = tk.Button(frame, text="Confirmar Compra", font=("Comic Sans MS", 12), bg="#4D5F91", fg="#FFFFFF", command=confirmar_compra)
     confirmar_compra_button.pack(pady=10, side=tk.LEFT)
 
-  
+
+# Credenciales del administrador
+admin_username = 'AdminIPC2'
+admin_password = 'IPC2VJ2024'
+
 # Función de inicio de sesión
 def login():
     username = entry_username.get()
@@ -496,7 +504,7 @@ def login():
     
     if user:
         print("Inicio de sesión como usuario exitoso.")
-        if user.id == 'admin':
+        if user == 'admin':
             admin_window()
         else:
             user_window(user)
@@ -539,10 +547,6 @@ entry_password.grid(row=1, column=1, pady=10, padx=10)
 # Botón de login
 login_button = tk.Button(root, text="Ingresar", font=("Comic Sans MS", 14), bg=button_bg, fg=button_fg, command=login, width=14, height=2)
 login_button.pack(pady=18)
-
-# Añadir usuario administrador por defecto
-admin_usuario = Usuario('admin', 'Admin', 0, 'admin@example.com', '00000000', 'admin')
-usuarios.insertar(admin_usuario)
 
 # Ejecutar la aplicación
 root.mainloop()
