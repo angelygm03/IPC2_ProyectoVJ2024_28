@@ -2,13 +2,39 @@ from flask import Flask, request
 from flask.json import jsonify
 from xml.etree import ElementTree as ET
 from manage import Manager
+from flask_cors import CORS
 
 app = Flask(__name__)
 manager = Manager()
+cors = CORS(app)
+
 
 @app.route('/')
 def index():
     return "API con Python y Flask funcionando correctamente"
+
+
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.get_json()
+    id = data.get('id')
+    password = data.get('password')
+    if id == 'AdminIPC2' and password == 'IPC2VJ2024':
+        return jsonify({
+                        'message': 'Usuario logueado correctamente',
+                        'role': 2,
+                        'status': 200
+                    })
+    else:
+        for i in manager.usuarios:
+            if i.id == id and i.password == password:
+                return jsonify({
+                        'message': 'Usuario logueado correctamente',
+                        'role': 2,
+                        'status': 200
+                    })
+        return jsonify({"message": "Credenciales incorrectas"}), 400
+
 
 @app.route('/cargaUsuarios', methods=['POST'])
 def cargaUsuarios():
@@ -84,4 +110,4 @@ def verEmpleados():
     return jsonify(x), 200
 
 if __name__ == '__main__':
-    app.run(debug=True, port=8000)
+    app.run(debug=True, port=5000)
