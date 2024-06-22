@@ -22,7 +22,7 @@ def login():
     if id == 'AdminIPC2' and password == 'IPC2VJ2024':
         return jsonify({
                         'message': 'Usuario logueado correctamente',
-                        'role': 2,
+                        'role': 1,
                         'status': 200
                     })
     else:
@@ -108,6 +108,29 @@ def cargaEmpleados():
 def verEmpleados():
     x = manager.getEmpleado()
     return jsonify(x), 200
+
+@app.route('/añadirCarrito', methods=['POST'])
+def añadirCarrito():
+    data = request.get_json()
+    user_id = data.get('user_id')
+    product_id = data.get('product_id')
+    if manager.agregarCarrito(user_id, product_id):
+        return jsonify({"message": "Producto añadido al carrito"}), 200
+    return jsonify({"message": "No se pudo añadir el producto al carrito"}), 400
+
+@app.route('/verCarrito', methods=['GET'])
+def verCarrito():
+    user_id = request.args.get('user_id')
+    carrito = manager.getCarrito(user_id)
+    return jsonify(carrito), 200
+
+@app.route('/vaciarCarrito', methods=['POST'])
+def vaciarCarrito():
+    data = request.get_json()
+    user_id = data.get('user_id')
+    if manager.empty_carrito(user_id):
+        return jsonify({"message": "Carrito vaciado"}), 200
+    return jsonify({"message": "No se pudo vaciar el carrito"}), 400
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)

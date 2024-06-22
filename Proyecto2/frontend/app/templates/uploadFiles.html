@@ -1,0 +1,66 @@
+{% extends "baseAdmin.html" %}
+{% load static %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subir archivos Admin</title>
+    <!-- Agregar enlace a Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .btn-group-vertical .btn {
+            margin-bottom: 10px; /* Añadir margen inferior para mayor separación */
+        }
+        #selectFileBtn {
+            width: 200px; /* Ancho fijo para el botón de selección de archivo */
+            overflow: hidden; /* Oculta el desbordamiento del texto */
+            text-overflow: ellipsis; /* Añade puntos suspensivos al final del texto desbordado */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 class="my-4">Carga Masiva</h2>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="btn-group-vertical">
+                    <button id="selectFileBtn" class="btn btn-dark my-2">Seleccionar archivo</button>
+                    <button id="showBtn" class="btn btn-dark my-2">Mostrar</button>
+                    <button id="loadUsersBtn" class="btn btn-dark my-2">Cargar Usuarios</button>
+                    <button id="loadEmployeesBtn" class="btn btn-dark my-2">Cargar Empleados</button>
+                    <button id="loadActivitiesBtn" class="btn btn-dark my-2">Cargar Actividades</button>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <textarea id="fileContent" class="form-control custom-textarea" rows="15" placeholder="Contenido del archivo XML" readonly></textarea>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Dialogo para cargar archivos -->
+    <input type="file" id="fileInput" style="display: none;" accept=".xml" />
+
+    <!-- Agregar enlace a Bootstrap JS y sus dependencias -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        document.getElementById('selectFileBtn').addEventListener('click', function() {
+            document.getElementById('fileInput').click();
+        });
+
+        document.getElementById('fileInput').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                document.getElementById('selectFileBtn').textContent = 'Archivo seleccionado: ' + file.name;
+                console.log('Archivo seleccionado:', file.name);
+                
+            }
+        });
+    </script>
+</body>
+</html>
+{% endblock content %}

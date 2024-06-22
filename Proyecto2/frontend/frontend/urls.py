@@ -21,3 +21,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('app.urls')),
 ]
+
+#NO TOCAR YA NADA DE AQUÍ

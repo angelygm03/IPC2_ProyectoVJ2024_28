@@ -27,18 +27,6 @@
     max-width: 40rem;
   }
   
-  footer {
-    padding-top: 3rem;
-    padding-bottom: 3rem;
-  }
-  
-  footer p {
-    margin-bottom: .25rem;
-  }
-  
-  img {
-    width: 50%;
-  }
   
   .box-shadow { box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05); }
   
@@ -49,3 +37,48 @@
   .container{
     padding-left: 0rem;
   }
+
+.custom-navbar {
+  background-color: #074173; 
+}
+
+.custom-navbar .navbar-brand,
+.custom-navbar .nav-link {
+  color: white; 
+}
+
+.custom-navbar .nav-link:hover {
+  color: #d8eaf4; 
+}
+
+body {
+  font-family: 'Merriweather Sans', sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Merriweather Sans', sans-serif;
+  font-weight: 700; 
+}
+
+.btn-group-vertical {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+.btn-group-vertical button {
+  font-family: 'Merriweather Sans', sans-serif;
+  padding: 12px 20px;
+  font-size: 14px;
+  color: #fff;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  width: 200px; 
+  transition: background-color 0.3s;
+}
+
+.btn-group-vertical button:hover {
+  background-color: #141414;
+}

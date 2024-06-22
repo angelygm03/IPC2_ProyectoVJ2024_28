@@ -1,48 +1,18 @@
 {% extends "base.html" %}
+{% load static %}
 {% block content %}
+
 <section class="jumbotron text-center">
     <div class="container">
-      <h1 class="jumbotron-heading">IPCmarket</h1>
-      <p class="lead text-muted">Al parecer aqui tiene que ir un eslogan</p>
+        <div class="img-container">
+            <img src="{% static 'images/shopping-bag.png' %}" alt="Shopping Bag" class="img-fluid mx-auto d-block">
+        </div>
+      <h1 class="jumbotron-heading"> Bienvenido a IPCmarket</h1>
+      <p class="lead text-muted">Realiza tus compras en línea</p>
       <p>
-        <a href="#" class="btn btn-dark my-2">Ver productos</a>
-        <a href="#" class="btn btn-secondary my-2">Ver empleados</a>
+        <a href="{% url 'login' %}" class="btn btn-dark my-2">Iniciar Sesión</a>
       </p>
     </div>
   </section>
 
-  <div class="album py-5 bg-light">
-    <div class="container">
-      <div class="row">
-        {% for prod in productos%}
-        <div class="col-md-4">
-          <div class="card mb-4 box-shadow" style="width: 23rem;">
-            <img class="card-img-top" style="width: 23rem; height: 20rem; " src="{{prod.imagen}}" alt="{{user.nombre}}">
-            <div class="card-body">
-                <h5 class="card-title">{{prod.nombre}}</h5>
-                <h6 class="card-subtitle mb-2 text-muted">Q.{{prod.precio}}</h6>
-              <p class="card-text" style="text-align: justify; height: 10rem;">{{prod.descripcion}}</p>
-              <div class="d-flex justify-content-between align-items-center">
-                <div class="btn-group">
-                  <button type="button" class="btn btn-sm btn-outline-secondary">Ver</button>
-                  <button type="button" class="btn btn-sm btn-dark">Ver más</button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        {% endfor %}
-      </div>
-    </div>
-  </div>
-  {% endblock content %}
-  
-  <footer class="text-muted">
-    <div class="container">
-      <p class="float-right">
-        <a href="{% url 'index' %}">Regresar al tope</a>
-      </p>
-      <p>Ejemplo de Tienda de Productos &copy; Bootstrap.</p>
-      <p>¿Nuevos en Bootstrap? <a href="../../">Visiten la pagina oficial </a> o consulten <a href="../../getting-started/"> la guía de inicio</a>.</p>
-    </div>
-  </footer> 
+{% endblock content %}

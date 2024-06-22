@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+<section class="vh-100 gradient-custom">
+  <div class="container py-5">
+    <div class="row d-flex justify-content-center align-items-center">
+      <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+        <div class="card" style="border-radius: 1rem;">
+          <div class="card-body p-5 text-center">
+
+            <div class="mb-md-5 mt-md-4 pb-5">
+              <div class="img-container">
+                <img src="{% static 'images/person.png' %}" alt="Usuario" class="img-fluid mx-auto d-block">
+              </div>
+              <h2 class="fw-bold mb-2 text-uppercase">Iniciar Sesión</h2>
+              <p class="text-gray-50 mb-5">Por favor, ingresa tu usuario y contraseña</p>
+              
+              <form enctype="multipart/form-data" method="POST" action="/singin/">
+                {% csrf_token %}
+                
+                <div class="form-outline form-green mb-4 text-start">
+                  <label for="iduser" class="form-label">ID de Usuario</label>
+                  <input type="text" name="iduser" id="iduser" placeholder="IPC2-00" class="form-control form-control-lg" required=""/>
+                </div>
+
+                <div class="form-outline form-green mb-4 text-start">
+                  <label for="password" class="form-label">Password</label>
+                  <input type="password" name="password" id="password" placeholder="••••••••" class="form-control form-control-lg" required=""/>
+                </div>
+
+                <button class="btn btn-success btn-dark px-5" type="submit">Ingresar</button>
+              </form>
+              
+              {% if messages %}
+                {% for message in messages %}
+                  <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mt-4" role="alert">
+                    <strong class="font-bold">Error!</strong>
+                    <span class="block sm:inline">{{ message }}</span>
+                  </div>
+                {% endfor %}
+              {% endif %}
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock content %}
