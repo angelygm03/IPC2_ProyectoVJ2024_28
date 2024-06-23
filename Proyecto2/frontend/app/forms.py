@@ -7,3 +7,7 @@ class LoginForm(forms.Form):
 
 class FileForm(forms.Form):
     file = forms.FileField(label='file')
+
+class AddCartForm(forms.Form):
+    product_id = forms.CharField(label='product_id')
+    user_id = forms.CharField(label='user_id')

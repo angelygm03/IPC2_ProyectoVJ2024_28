@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, jsonify, Response
 from flask.json import jsonify
 from xml.etree import ElementTree as ET
 from manage import Manager
@@ -111,26 +111,34 @@ def verEmpleados():
 
 @app.route('/añadirCarrito', methods=['POST'])
 def añadirCarrito():
-    data = request.get_json()
+    data = request.json
     user_id = data.get('user_id')
-    product_id = data.get('product_id')
-    if manager.agregarCarrito(user_id, product_id):
+    product_ids = data.get('product_id')
+    if manager.agregarCarrito(user_id, product_ids):
         return jsonify({"message": "Producto añadido al carrito"}), 200
-    return jsonify({"message": "No se pudo añadir el producto al carrito"}), 400
+    else:
+        return jsonify({"message": "Error al añadir el producto al carrito"}), 500
 
 @app.route('/verCarrito', methods=['GET'])
 def verCarrito():
     user_id = request.args.get('user_id')
-    carrito = manager.getCarrito(user_id)
+    print(f"Ver carrito para user_id: {user_id}") 
+    carrito = manager.obtenerCarrito(user_id)
     return jsonify(carrito), 200
 
-@app.route('/vaciarCarrito', methods=['POST'])
-def vaciarCarrito():
-    data = request.get_json()
-    user_id = data.get('user_id')
-    if manager.empty_carrito(user_id):
-        return jsonify({"message": "Carrito vaciado"}), 200
-    return jsonify({"message": "No se pudo vaciar el carrito"}), 400
+@app.route('/verListaCompras', methods=['GET'])
+def verListaCompras():
+    user_id = request.args.get('user_id')
+    print(f"Ver lista de compras para user_id: {user_id}") 
+    lista_compras = manager.obtenerListaCompras(user_id)
+    return jsonify(lista_compras), 200
+
+@app.route('/generarXMLCarrito', methods=['GET'])
+def generarXMLCarrito():
+    user_id = request.args.get('user_id')
+    xml_tree = manager.generarXMLCarrito(user_id)
+    xml_str = ET.tostring(xml_tree.getroot(), encoding='utf-8', method='xml')
+    return Response(xml_str, mimetype='application/xml')
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)

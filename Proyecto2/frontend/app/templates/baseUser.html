@@ -16,7 +16,7 @@
     <style>
 
         .navbar {
-          font-family: 'Merriweather Sans', sans-serif; /* Aplica la fuente personalizada */
+          font-family: 'Merriweather Sans', sans-serif; 
         }
     </style>
 </head>
@@ -24,30 +24,18 @@
 <header>
     <nav class="navbar navbar-expand-lg custom-navbar">
         <div class="container-fluid">
-            <img src="{% static 'images/adminUser.png' %}" alt="Usuario" class="img-fluid mx-auto d-block">
-            <a class="navbar-brand" href=#> Admin</a>
+            <img src="{% static 'images/user-navbar.png' %}" alt="Usuario" class="img-fluid mx-auto d-block">
+            <a class="navbar-brand" href=#>Bienvenido</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="{% url 'upload' %}">Cargar archivos</a>
+                    <li>
+                        <a class="nav-link active" aria-current="page" href="{% url 'comprar' %}">Ver Productos</a>
                     </li>
                     <li>
-                        <a class="nav-link active" aria-current="page" href="{% url 'verProductos' %}">Ver productos</a>
-                    </li>
-                    <li>
-                        <a class="nav-link active" aria-current="page" href="{% url 'index' %}">Estadísticas</a>
-                    </li>
-                    <li>
-                        <a class="nav-link active" aria-current="page" href="{% url 'index' %}">Reportes</a>
-                    </li>
-                    <li>
-                        <a class="nav-link active" aria-current="page" href="{% url 'index' %}">Ver Actividades</a>
-                    </li>
-                    <li>
-                        <a class="nav-link active" aria-current="page" href="{% url 'index' %}">Ayuda</a>
+                        <a class="nav-link active" aria-current="page" href="{% url 'index' %}">Ver carrito</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="{% url 'index' %}">Salir</a>

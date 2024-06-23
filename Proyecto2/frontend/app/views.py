@@ -1,7 +1,7 @@
 from django.shortcuts import render
 import requests
 from django.contrib import messages
-from .forms import LoginForm, FileForm
+from .forms import LoginForm, FileForm, AddCartForm
 import json
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
@@ -79,8 +79,10 @@ def singin(request):
 def adminView(request):
     return render(request, 'admin.html')
 
+
 def userView(request):
     return render(request, 'user.html')
+
 
 def admincarga(request):
     ctx = {
@@ -170,11 +172,52 @@ def enviarEmpleados(request):
     except:
         return render(request, 'uploadFiles.html')
 
-#def index(request):
-#    response = requests.get(endpoint + 'verProductos')
-#    productos = response.json()
-#    context = {
-#        'productos': productos
-#   }
-#    return render(request, 'index.html', context)
+def verProductos(request):
+    response = requests.get(endpoint + 'verProductos')
+    productos = response.json()
+    context = {
+        'productos': productos
+    }
+    return render(request, 'mostrarProductos.html', context)
+
+def comprar(request):
+    response = requests.get(endpoint + 'verProductos')
+    productos = response.json()
+    context = {
+        'productos': productos
+    }
+    return render(request, 'user.html', context)
+
+#metodo para añadir al carrito desde el forms.py en la clase AddCartForm
+def añadirCarrito(request):
+    try:
+        if request.method == 'POST':
+            form = AddCartForm(request.POST)
+            if form.is_valid():
+                user_id = form.cleaned_data['user_id']
+                product_id = form.cleaned_data['product_id']
+                print(f"Datos enviados al backend: user_id={user_id}, product_id={product_id}")  # Print para depuración
+                # PETICION AL BACKEND
+                url = endpoint + 'añadirCarrito'
+                data = {
+                    'user_id': user_id,
+                    'product_id': product_id
+                }
+                json_data = json.dumps(data)
+                headers = {
+                    'Content-Type': 'application/json'
+                }
+                response = requests.post(url, data=json_data, headers=headers)
+                print(f"Respuesta del backend: {response.status_code}, {response.json()}")  # Print para depuración
+                if response.status_code == 200:
+                    mensaje = response.json()
+                    messages.success(request, mensaje['message'])
+                else:
+                    mensaje = response.json()
+                    messages.error(request, mensaje['message'])
+            else:
+                messages.error(request, 'Formulario no válido')
+            return redirect('comprar')
+    except Exception as e:
+        return redirect('comprar')
 

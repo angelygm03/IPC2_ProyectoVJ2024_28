@@ -6,17 +6,13 @@ class Usuario:
         self.email = email
         self.telefono = telefono
         self.password = password
-        self.carrito = []  # Inicializamos el carrito como una lista vacía
+        self.carrito = []
 
     def agregarCarrito(self, producto):
         self.carrito.append(producto)
 
-    def getCarrito(self):
-        return self.carrito
+    def get_carrito(self):
+        return [p.__dict__ for p in self.carrito]
 
     def empty_carrito(self):
         self.carrito = []
-    
-    def getUsuario(self):
-        return self
-    
