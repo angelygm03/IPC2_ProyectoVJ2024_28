@@ -1,6 +1,7 @@
 from django.shortcuts import render
 import requests
-from .forms import LoginForm
+from django.contrib import messages
+from .forms import LoginForm, FileForm
 import json
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
@@ -86,6 +87,88 @@ def admincarga(request):
         'title':'Carga Masiva'
     }
     return render(request, 'uploadFiles.html', ctx)
+
+def cargarXML(request):
+    ctx = {
+        'contenido_archivo':None
+    }
+    try:
+        if request.method == 'POST':
+            #obtenemos el formulario
+            form = FileForm(request.POST, request.FILES)
+            print(form.is_valid())
+            if form.is_valid():
+                #obtenemos el archivo
+                archivo = request.FILES['file']
+                #guardamos el binario
+                xml = archivo.read()
+                xml_decodificado = xml.decode('utf-8')
+                #guardamos el contenido del archivo
+                contexto['binario_xml'] = xml
+                contexto['contenido_archivo'] = xml_decodificado
+                ctx['contenido_archivo'] = xml_decodificado
+                return render(request, 'uploadFiles.html', ctx)
+    except:
+        return render(request, 'uploadFiles.html')
+
+def enviarUsuarios(request):
+    try:
+        if request.method == 'POST':
+            xml = contexto['binario_xml']
+            if xml is None:
+                messages.error(request, 'No se ha cargado ningun archivo')
+                return render(request, 'uploadFiles.html')
+            
+            #PETICION AL BACKEND
+            url = endpoint + 'cargaUsuarios'
+            respuesta = requests.post(url, data=xml)
+            mensaje = respuesta.json()
+            messages.success(request, mensaje['message'])
+            contexto['binario_xml'] = None
+            contexto['contenido_archivo'] = None
+            return render(request, 'uploadFiles.html', contexto)
+    except:
+        return render(request, 'uploadFiles.html')
+
+
+def enviarProductos(request):
+    try:
+        if request.method == 'POST':
+            xml = contexto['binario_xml']
+            if xml is None:
+                messages.error(request, 'No se ha cargado ningun archivo')
+                return render(request, 'uploadFiles.html')
+            
+            #PETICION AL BACKEND
+            url = endpoint + 'cargaProductos'
+            respuesta = requests.post(url, data=xml)
+            mensaje = respuesta.json()
+            messages.success(request, mensaje['message'])
+            contexto['binario_xml'] = None
+            contexto['contenido_archivo'] = None
+            return render(request, 'uploadFiles.html', contexto)
+    except:
+        return render(request, 'uploadFiles.html')
+
+
+def enviarEmpleados(request):
+    try:
+        if request.method == 'POST':
+            xml = contexto['binario_xml']
+            if xml is None:
+                messages.error(request, 'No se ha cargado ningun archivo')
+                return render(request, 'uploadFiles.html')
+            
+            #PETICION AL BACKEND
+            url = endpoint + 'cargaEmpleados'
+            respuesta = requests.post(url, data=xml)
+            mensaje = respuesta.json()
+            messages.success(request, mensaje['message'])
+            contexto['binario_xml'] = None
+            contexto['contenido_archivo'] = None
+            return render(request, 'uploadFiles.html', contexto)
+    except:
+        return render(request, 'uploadFiles.html')
 
 #def index(request):
 #    response = requests.get(endpoint + 'verProductos')

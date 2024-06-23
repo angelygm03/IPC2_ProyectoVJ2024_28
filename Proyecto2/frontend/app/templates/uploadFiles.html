@@ -1,66 +1,66 @@
 {% extends "baseAdmin.html" %}
 {% load static %}
 {% block content %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Subir archivos Admin</title>
-    <!-- Agregar enlace a Bootstrap CSS -->
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        .btn-group-vertical .btn {
-            margin-bottom: 10px; /* Añadir margen inferior para mayor separación */
-        }
-        #selectFileBtn {
-            width: 200px; /* Ancho fijo para el botón de selección de archivo */
-            overflow: hidden; /* Oculta el desbordamiento del texto */
-            text-overflow: ellipsis; /* Añade puntos suspensivos al final del texto desbordado */
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h2 class="my-4">Carga Masiva</h2>
-        <div class="row">
-            <div class="col-md-6">
-                <div class="btn-group-vertical">
-                    <button id="selectFileBtn" class="btn btn-dark my-2">Seleccionar archivo</button>
-                    <button id="showBtn" class="btn btn-dark my-2">Mostrar</button>
-                    <button id="loadUsersBtn" class="btn btn-dark my-2">Cargar Usuarios</button>
-                    <button id="loadEmployeesBtn" class="btn btn-dark my-2">Cargar Empleados</button>
-                    <button id="loadActivitiesBtn" class="btn btn-dark my-2">Cargar Actividades</button>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <textarea id="fileContent" class="form-control custom-textarea" rows="15" placeholder="Contenido del archivo XML" readonly></textarea>
-            </div>
-        </div>
+<div class="flex h-full">
+    <!-- lado izquierdo -->
+    <div class="w-1/4 px-4 py-2 bg-gray-200 dark:bg-gray-700 flex flex-col justify-center items-center">
+        <form class="flex items-center space-x-4 mb-4" method="POST" enctype="multipart/form-data" action="/cargaxml/">
+            {% csrf_token %}
+            <label for="file" class="px-3 py-2 bg-gray-200 text-gray-700 rounded-lg cursor-pointer hover:bg-gray-300 transition duration-150 ease-in-out">
+                Seleccionar Archivo
+            </label>
+            <input type="file" id="file" name="file" accept="text/xml" class="hidden">
+            <button type="submit" class="btn-blue">
+                <span class="mr-2">
+                    <i class="fas fa-file"></i>
+                </span>
+                Mostrar
+            </button>
+        </form>
+
+        <form method="POST" enctype="multipart/form-data" action="/xmlusuarios/">
+            {% csrf_token %}
+            <button class="btn-blue w-full">Cargar Usuarios</button>
+        </form>
+
+        <form method="POST" enctype="multipart/form-data" action="/xmlproductos/">
+            {% csrf_token %}
+            <button class="btn-green mt-2 w-full">Cargar Productos</button>
+        </form>
+
+        <form method="POST" enctype="multipart/form-data" action="/xmlempleados/">
+            {% csrf_token %}
+            <button class="btn-yellow mt-2 w-full">Cargar Empleados</button>
+        </form>
+
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <button>Limpiar Vista Previa</button>
+        </form>
+        {% if messages %}
+            {% for message in messages %}
+                <p class="
+                    {% if message.tags == 'success' %}
+                        bg-green-500 text-white
+                    {% elif message.tags == 'error' %}
+                        bg-red-500 text-white
+                    {% endif %}
+                    px-3 py-2 rounded-lg mb-2
+                ">
+                    {{ message }}
+                </p>
+            {% endfor %}
+        {% endif %}
     </div>
-    
-    <!-- Dialogo para cargar archivos -->
-    <input type="file" id="fileInput" style="display: none;" accept=".xml" />
 
-    <!-- Agregar enlace a Bootstrap JS y sus dependencias -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
-    <script>
-        document.getElementById('selectFileBtn').addEventListener('click', function() {
-            document.getElementById('fileInput').click();
-        });
-
-        document.getElementById('fileInput').addEventListener('change', function(event) {
-            const file = event.target.files[0];
-            if (file) {
-                document.getElementById('selectFileBtn').textContent = 'Archivo seleccionado: ' + file.name;
-                console.log('Archivo seleccionado:', file.name);
-                
-            }
-        });
-    </script>
-</body>
-</html>
-{% endblock content %}
+    <!-- lado derecho -->
+    <div class="w-3/4 mx-4 flex flex-col">
+        <h1 >Vista Previa</h1>
+        {% if contenido_archivo %}
+            <textarea  readonly>{{contenido_archivo}}</textarea>
+        {% else %}
+            <textarea readonly></textarea>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

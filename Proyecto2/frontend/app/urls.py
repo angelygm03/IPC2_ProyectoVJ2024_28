@@ -9,4 +9,8 @@ urlpatterns = [
     path('usuario/', views.userView, name='usuario'),
     path('singin/', views.singin, name='singin'),
     path('upload/', views.admincarga, name='upload'),
+    path('cargaxml/', views.cargarXML, name='cargaxml'),
+    path('xmlusuarios/', views.enviarUsuarios, name='xmlusuarios'),
+    path('xmlproductos/', views.enviarProductos, name='xmlproductos'),
+    path('xmlempleados/', views.enviarEmpleados, name='xmlempleados'),
 ]
