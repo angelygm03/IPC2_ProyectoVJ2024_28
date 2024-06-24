@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify, Response
 from flask.json import jsonify
 from xml.etree import ElementTree as ET
 from manage import Manager
+from datetime import datetime
 from flask_cors import CORS
 
 app = Flask(__name__)
@@ -209,6 +210,73 @@ def indent_xml(elem, level=0):
     else:
         if level and (not elem.tail or not elem.tail.strip()):
             elem.tail = i
+
+@app.route('/cargaActividades', methods=['POST'])
+def cargaActividades():
+    xml = request.data.decode('utf-8')
+    raiz = ET.XML(xml)
+    
+    for elemento in raiz:
+        id = elemento.attrib.get('id')
+        nombre = elemento.find('nombre').text
+        descripcion = elemento.find('descripcion').text
+        empleado = elemento.find('empleado').text
+        dia = int(elemento.find('dia').text)
+        hora = int(elemento.find('dia').attrib.get('hora'))
+
+        manager.addActividad(id, nombre, descripcion, empleado, dia, hora)
+        
+        print(f'Actividad añadida: id={id}, nombre={nombre}, descripcion={descripcion}, empleado={empleado}, dia={dia}, hora={hora}')
+    
+    return jsonify({"message": "Archivo XML cargado correctamente"}), 200
+
+@app.route('/verActividades', methods=['GET'])
+def verActividades():
+    actividades = manager.getActividades()
+    return jsonify(actividades), 200
+
+def obtener_dia_actual():
+    num_dia = datetime.today().weekday()
+    dias_semana = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo']
+    nombre_dia = dias_semana[num_dia]
+    return nombre_dia, num_dia + 1  
+
+def formatear_hora(hora):
+    return f"{hora:02}:00"
+
+@app.route('/generarXMLActividadesHoy', methods=['GET'])
+def generar_xml_actividades_hoy():
+    nombre_dia, num_dia = obtener_dia_actual()
+
+    root = ET.Element("actividades_hoy")
+    dia_elem = ET.SubElement(root, "dia")
+    dia_elem.text = nombre_dia
+
+    actividades_elem = ET.SubElement(root, "actividades")
+
+    for actividad in manager.getActividades():  
+        if actividad['dia'] == num_dia:
+            actividad_elem = ET.SubElement(actividades_elem, "actividad", id=str(actividad['id']))
             
+            nombre_elem = ET.SubElement(actividad_elem, "nombre")
+            nombre_elem.text = actividad['nombre']
+            
+            descripcion_elem = ET.SubElement(actividad_elem, "descripcion")
+            descripcion_elem.text = actividad['descripcion']
+            
+            empleado_elem = ET.SubElement(actividad_elem, "empleado", id=str(actividad['empleado']))
+            empleado_elem.text = manager.obtenerNombreEmpleado(actividad['empleado']) 
+            
+            hora_elem = ET.SubElement(actividad_elem, "hora")
+            hora_formateada = formatear_hora(actividad['hora'])
+            hora_elem.text = hora_formateada
+
+    indent_xml(root)
+    xml_str = ET.tostring(root, encoding='unicode', method='xml')
+    xml_declaration = '<?xml version="1.0" encoding="UTF-8"?>\n'
+    full_xml_str = xml_declaration + xml_str
+
+    return Response(full_xml_str, mimetype='application/xml')
+
 if __name__ == '__main__':
     app.run(debug=True, port=5000)

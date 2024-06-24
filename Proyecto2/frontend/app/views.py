@@ -277,3 +277,38 @@ def generar_reporte_compras(request):
     except Exception as e:
         messages.error(request, str(e))
         return redirect('administrador')
+
+def enviarActividades(request):
+    try:
+        if request.method == 'POST':
+            xml = contexto['binario_xml']
+            if xml is None:
+                messages.error(request, 'No se ha cargado ningun archivo')
+                return render(request, 'uploadFiles.html')
+            
+            #PETICION AL BACKEND
+            url = endpoint + 'cargaActividades'
+            respuesta = requests.post(url, data=xml)
+            mensaje = respuesta.json()
+            messages.success(request, mensaje['message'])
+            contexto['binario_xml'] = None
+            contexto['contenido_archivo'] = None
+            return render(request, 'uploadFiles.html', contexto)
+    except:
+        return render(request, 'uploadFiles.html')
+
+def verActividades(request):
+    try:
+        url = endpoint + 'generarXMLActividadesHoy'
+        response = requests.get(url)
+        
+        if response.status_code == 200:
+            xml_content = response.text
+            context = {'xml_content': xml_content}
+            return render(request, 'actividades.html', context)
+        else:
+            messages.error(request, 'Error al obtener las actividades del día')
+            return redirect('administrador')
+    except Exception as e:
+        messages.error(request, str(e))
+        return redirect('administrador')

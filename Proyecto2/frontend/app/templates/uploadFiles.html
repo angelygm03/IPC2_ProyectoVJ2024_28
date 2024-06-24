@@ -33,6 +33,11 @@
             <button class="btn-yellow mt-2 w-full">Cargar Empleados</button>
         </form>
 
+        <form method="POST" enctype="multipart/form-data" action="/xmlactividades/">
+            {% csrf_token %}
+            <button class="btn-yellow mt-2 w-full">Cargar Actividades</button>
+        </form>
+
         <form method="POST" enctype="multipart/form-data">
             {% csrf_token %}
             <button>Limpiar Vista Previa</button>

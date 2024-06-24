@@ -13,11 +13,12 @@ urlpatterns = [
     path('xmlusuarios/', views.enviarUsuarios, name='xmlusuarios'),
     path('xmlproductos/', views.enviarProductos, name='xmlproductos'),
     path('xmlempleados/', views.enviarEmpleados, name='xmlempleados'),
+    path('xmlactividades/', views.enviarActividades, name='xmlactividades'),
     path('verProductos/', views.verProductos, name='verProductos'),
     path('comprar/', views.comprar, name='comprar'),
     path('añadirCarrito/', views.añadirCarrito, name='añadirCarrito'),
     path('carrito/', views.Carrito, name='carrito'),
     path('confirmarCompra/', views.confirmarCompra, name='confirmarCompra'),
     path('generarReporte/', views.generar_reporte_compras, name='generarReporte'),
-
+    path('verActividades/', views.verActividades, name='verActividades'),
 ]

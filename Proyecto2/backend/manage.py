@@ -1,6 +1,7 @@
 from clases.usuario import Usuario
 from clases.producto import Producto
 from clases.empleado import Empleado
+from clases.actividad import Actividad
 import xml.etree.ElementTree as ET
 
 class Manager():
@@ -10,6 +11,7 @@ class Manager():
         self.empleados = []
         self.carritos = {}
         self.compras = {}
+        self.actividades = []
 
     def addUsuario(self, id, nombre, edad, email, telefono, password):
         usuario = Usuario(id, nombre, edad, email, telefono, password)
@@ -142,3 +144,18 @@ class Manager():
         else:
             if level and (not elem.tail or not elem.tail.strip()):
                 elem.tail = i
+    
+    def addActividad(self, id, nombre, descripcion, empleado, dia, hora):
+        actividad = Actividad(id, nombre, descripcion, empleado, dia, hora)
+        self.actividades.append(actividad)
+        return True
+
+    def getActividades(self):
+        return [actividad.to_dict() for actividad in self.actividades]
+    
+
+    def obtenerNombreEmpleado(self, empleado_id):
+        for empleado in self.empleados:
+            if empleado.codigo == empleado_id:
+                return empleado.nombre
+        return "Nombre del Empleado"
