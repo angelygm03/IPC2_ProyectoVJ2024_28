@@ -10,12 +10,12 @@ class Manager():
         self.empleados = []
         self.carritos = {}
         self.compras = {}
-    
+
     def addUsuario(self, id, nombre, edad, email, telefono, password):
         usuario = Usuario(id, nombre, edad, email, telefono, password)
         self.usuarios.append(usuario)
         return True
-    
+
     def getUsuario(self):
         json = []
         for i in self.usuarios:
@@ -34,7 +34,7 @@ class Manager():
         producto = Producto(id, nombre, precio, descripcion, categoria, cantidad, imagen)
         self.productos.append(producto)
         return True
-    
+
     def getProducto(self):
         json = []
         for p in self.productos:
@@ -49,12 +49,12 @@ class Manager():
             }
             json.append(producto)
         return json
-    
+
     def addEmpleado(self, codigo, nombre, puesto):
         empleado = Empleado(codigo, nombre, puesto)
         self.empleados.append(empleado)
         return True
-    
+
     def getEmpleado(self):
         json = []
         for e in self.empleados:
@@ -70,48 +70,75 @@ class Manager():
         if user_id not in self.carritos:
             self.carritos[user_id] = []  # Inicializa el carrito si no existe
         if not isinstance(product_ids, list):
-            product_ids = [product_ids] 
+            product_ids = [product_ids]
         self.carritos[user_id].extend(product_ids)
         return True
 
     def obtenerCarrito(self, user_id):
         carrito = self.carritos.get(user_id, [])
-        print(f"Obteniendo carrito para {user_id}: {carrito}")  
+        print(f"Obteniendo carrito para {user_id}: {carrito}")
         return carrito
 
     def obtenerListaCompras(self, user_id):
         compras = self.compras.get(user_id, [])
-        print(f"Obteniendo lista de compras para {user_id}: {compras}") 
+        print(f"Obteniendo lista de compras para {user_id}: {compras}")
         return compras
+
+    def obtenerNombreProducto(self, product_id):
+        for producto in self.productos:
+            if producto.id == product_id:
+                return producto.nombre  
+        return "Nombre del Producto"
+    
+    def obtenerPrecioProducto(self, product_id):
+        for producto in self.productos:
+            if producto.id == product_id:
+                return producto.precio  
+        return 0
+
+    def obtenerNombreUsuario(self, user_id):
+        for usuario in self.usuarios:
+            if usuario.id == user_id:
+                return usuario.nombre
+        return "Nombre del Usuario"
 
     def generarXMLCarrito(self, user_id):
         carrito = self.obtenerCarrito(user_id)
         producto_cantidades = {}
 
-        # Contar las cantidades de cada producto en el carrito
         for product_id in carrito:
             if product_id in producto_cantidades:
                 producto_cantidades[product_id] += 1
             else:
                 producto_cantidades[product_id] = 1
 
-        # Crear el elemento raíz del XML
         root = ET.Element("carrito")
 
-        # Crear elementos XML para cada producto con su cantidad
         for product_id, cantidad in producto_cantidades.items():
             product_name = self.obtenerNombreProducto(product_id)
             producto_elem = ET.SubElement(root, "producto", id=product_id)
             ET.SubElement(producto_elem, "nombre").text = product_name
             ET.SubElement(producto_elem, "cantidad").text = str(cantidad)
 
-        # Crear el árbol XML y devolverlo
-        tree = ET.ElementTree(root)
-        return tree
+        self.indent_xml(root)
+        xml_str = ET.tostring(root, encoding='unicode', method='xml')
+        xml_declaration = '<?xml version="1.0" encoding="UTF-8"?>\n'
+        full_xml_str = xml_declaration + xml_str
+
+        return full_xml_str
 
 
-    def obtenerNombreProducto(self, product_id):
-        return f"Producto {product_id}" 
-
-
- 
+    def indent_xml(self, elem, level=0):
+        i = "\n" + level * "  "
+        if len(elem):
+            if not elem.text or not elem.text.strip():
+                elem.text = i + "  "
+            if not elem.tail or not elem.tail.strip():
+                elem.tail = i
+            for elem in elem:
+                self.indent_xml(elem, level + 1)
+            if not elem.tail or not elem.tail.strip():
+                elem.tail = i
+        else:
+            if level and (not elem.tail or not elem.tail.strip()):
+                elem.tail = i

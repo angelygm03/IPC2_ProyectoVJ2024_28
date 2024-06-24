@@ -1,0 +1,17 @@
+{% extends "baseUser.html" %}
+{% load static %}
+{% block content %}
+
+<h2>Productos añadidos al carrito</h2>
+
+<textarea readonly style="width: 50%; height: 400px;">{{ xml_content }}</textarea>
+<div>
+    <form method="POST" enctype="multipart/form-data" action="{% url 'confirmarCompra' %}">
+        {% csrf_token %}
+
+        <input type="hidden" name="user_id" value="{{ request.COOKIES.id_user }}">
+        <button class="btn-yellow mt-2 w-full">Confirmar compra</button>
+    </form>
+</div>
+
+{% endblock content %}

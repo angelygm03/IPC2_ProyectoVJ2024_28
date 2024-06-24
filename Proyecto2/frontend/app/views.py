@@ -220,4 +220,60 @@ def añadirCarrito(request):
             return redirect('comprar')
     except Exception as e:
         return redirect('comprar')
+    
+def Carrito(request):
+    try:
+        user_id = request.COOKIES.get('id_user')
+        url = endpoint + 'generarXMLCarrito'
+        params = {
+            'user_id': user_id
+        }
+        response = requests.get(url, params=params)
+        xml_content = response.text 
+        context = {
+            'xml_content': xml_content
+        }
+        return render(request, 'carrito.html', context)
+    except Exception as e:
+        return redirect('comprar')
 
+
+def confirmarCompra(request):
+    try:
+        if request.method == 'POST':
+            user_id = request.POST.get('user_id')
+            if not user_id:
+                messages.error(request, 'User ID is required')
+                return redirect('carrito')
+
+            url = endpoint + 'confirmarCompra'
+            data = {'user_id': user_id}
+            headers = {'Content-Type': 'application/json'}
+            response = requests.post(url, json=data, headers=headers)
+
+            if response.status_code == 200:
+                mensaje = response.json()
+                messages.success(request, mensaje['message'])
+            else:
+                mensaje = response.json()
+                messages.error(request, mensaje['message'])
+
+            return redirect('carrito')
+    except Exception as e:
+        messages.error(request, str(e))
+        return redirect('carrito')
+
+def generar_reporte_compras(request):
+    try:
+        url = endpoint + 'generarReporte'
+        response = requests.get(url)
+        if response.status_code == 200:
+            xml_content = response.text
+            context = {'xml_content': xml_content}
+            return render(request, 'reportes.html', context)
+        else:
+            messages.error(request, 'Error al generar el reporte')
+            return redirect('administrador')
+    except Exception as e:
+        messages.error(request, str(e))
+        return redirect('administrador')

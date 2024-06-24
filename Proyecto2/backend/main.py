@@ -136,9 +136,79 @@ def verListaCompras():
 @app.route('/generarXMLCarrito', methods=['GET'])
 def generarXMLCarrito():
     user_id = request.args.get('user_id')
-    xml_tree = manager.generarXMLCarrito(user_id)
-    xml_str = ET.tostring(xml_tree.getroot(), encoding='utf-8', method='xml')
+    xml_str = manager.generarXMLCarrito(user_id)
     return Response(xml_str, mimetype='application/xml')
 
+@app.route('/confirmarCompra', methods=['POST'])
+def confirmar_compra():
+    user_id = request.json.get('user_id')
+    if not user_id:
+        return jsonify({'message': 'User ID is required'}), 400
+
+    try:
+        # Obtener el carrito del usuario y agregarlo a las compras
+        carrito = manager.obtenerCarrito(user_id)
+        if carrito:
+            manager.compras[user_id] = manager.compras.get(user_id, []) + carrito
+            manager.carritos[user_id] = []  # Vaciar el carrito después de la compra
+            return jsonify({'message': 'Compra confirmada y almacenada correctamente'}), 200
+        else:
+            return jsonify({'message': 'El carrito está vacío'}), 400
+    except Exception as e:
+        return jsonify({'message': str(e)}), 500
+
+@app.route('/generarReporte', methods=['GET'])
+def generar_reporte_compras():
+    compras = manager.compras
+    root = ET.Element("compras")
+
+    for compra_id, (user_id, carrito) in enumerate(compras.items(), 1):
+        compra_elem = ET.SubElement(root, "compra", id=str(compra_id))
+
+        usuario_elem = ET.SubElement(compra_elem, "usuario", id=user_id)
+        nombre_usuario = manager.obtenerNombreUsuario(user_id)
+        usuario_elem.text = nombre_usuario
+
+        total_elem = ET.SubElement(compra_elem, "Total")
+        total = 0
+
+        productos_elem = ET.SubElement(compra_elem, "productos")
+        producto_cantidades = {}
+        for product_id in carrito:
+            if product_id in producto_cantidades:
+                producto_cantidades[product_id] += 1
+            else:
+                producto_cantidades[product_id] = 1
+
+        for product_id, cantidad in producto_cantidades.items():
+            product_name = manager.obtenerNombreProducto(product_id)
+            producto_elem = ET.SubElement(productos_elem, "producto", id=product_id)
+            ET.SubElement(producto_elem, "nombre").text = product_name
+            ET.SubElement(producto_elem, "cantidad").text = str(cantidad)
+            total += manager.obtenerPrecioProducto(product_id) * cantidad
+
+        total_elem.text = str(total)
+
+    indent_xml(root)
+    xml_str = ET.tostring(root, encoding='unicode', method='xml')
+    xml_declaration = '<?xml version="1.0" encoding="UTF-8"?>\n'
+    full_xml_str = xml_declaration + xml_str
+    return Response(full_xml_str, mimetype='application/xml')
+
+def indent_xml(elem, level=0):
+    i = "\n" + level * "  "
+    if len(elem):
+        if not elem.text or not elem.text.strip():
+            elem.text = i + "  "
+        if not elem.tail or not elem.tail.strip():
+            elem.tail = i
+        for elem in elem:
+            indent_xml(elem, level + 1)
+        if not elem.tail or not elem.tail.strip():
+            elem.tail = i
+    else:
+        if level and (not elem.tail or not elem.tail.strip()):
+            elem.tail = i
+            
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
