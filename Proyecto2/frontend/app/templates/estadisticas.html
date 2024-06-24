@@ -1,0 +1,139 @@
+{% extends "baseAdmin.html" %}
+{% load static %}
+{% block content %}
+<style>
+    h3 {
+        margin-top: 20px;
+        margin-bottom: 50px;
+        margin-left: 20px; 
+    }
+</style>
+
+<h3>Estadísticas</h3>
+
+<div style="display: flex; justify-content: space-around;">
+    <!-- Gráfica de categorías -->
+    <div style="width: 550px; text-align: center;">
+        <h5>Top 3 categorías con más productos</h5>
+        <canvas id="chartTop3Categorias" width="400" height="200"></canvas>
+    </div>
+    <!-- Gráfica de productos -->
+    <div style="width: 550px; text-align: center;">
+        <h5>Top 3 productos con más cantidad disponible</h5>
+        <canvas id="chartTop3Productos" width="400" height="200"></canvas>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const fetchTop3Categorias = fetch('/top3Categorias/')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Error en la respuesta de /top3Categorias');
+                }
+                return response.json();
+            });
+
+        const fetchTop3Productos = fetch('/top3Productos/')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Error en la respuesta de /top3Productos');
+                }
+                return response.json();
+            });
+
+        Promise.all([fetchTop3Categorias, fetchTop3Productos])
+            .then(results => {
+                const [categoriasData, productosData] = results;
+
+                // Gráfica de Categorías
+                const ctxCategorias = document.getElementById('chartTop3Categorias').getContext('2d');
+                new Chart(ctxCategorias, {
+                    type: 'bar',
+                    data: {
+                        labels: categoriasData.categorias,
+                        datasets: [{
+                            label: 'Cantidad de productos',
+                            data: categoriasData.cantidades,
+                            backgroundColor: [
+                                'rgba(255, 99, 132, 0.7)',
+                                'rgba(54, 162, 235, 0.7)',
+                                'rgba(255, 206, 86, 0.7)'
+                            ],
+                            borderColor: [
+                                'rgba(255, 99, 132, 1)',
+                                'rgba(54, 162, 235, 1)',
+                                'rgba(255, 206, 86, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            x: {
+                                beginAtZero: true
+                            },
+                            y: {
+                                beginAtZero: true
+                            }
+                        },
+                        animation: {
+                            duration: 1000,
+                            easing: 'easeInOutBounce'
+                        },
+                        plugins: {
+                            legend: {
+                                display: false // Oculta la leyenda
+                            }
+                        }
+                    }
+                });
+
+                // Gráfica de Productos
+                const ctxProductos = document.getElementById('chartTop3Productos').getContext('2d');
+                new Chart(ctxProductos, {
+                    type: 'bar',
+                    data: {
+                        labels: productosData.productos,
+                        datasets: [{
+                            label: 'Unidades disponibles',
+                            data: productosData.cantidades,
+                            backgroundColor: [
+                                'rgba(75, 192, 192, 0.7)',
+                                'rgba(153, 102, 255, 0.7)',
+                                'rgba(255, 159, 64, 0.7)'
+                            ],
+                            borderColor: [
+                                'rgba(75, 192, 192, 1)',
+                                'rgba(153, 102, 255, 1)',
+                                'rgba(255, 159, 64, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            x: {
+                                beginAtZero: true
+                            },
+                            y: {
+                                beginAtZero: true
+                            }
+                        },
+                        animation: {
+                            duration: 1000,
+                            easing: 'easeInOutBounce'
+                        },
+                        plugins: {
+                            legend: {
+                                display: false 
+                            }
+                        }
+                    }
+                });
+            })
+    });
+</script>
+{% endblock content %}

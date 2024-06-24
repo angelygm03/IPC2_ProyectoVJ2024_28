@@ -3,7 +3,7 @@ import requests
 from django.contrib import messages
 from .forms import LoginForm, FileForm, AddCartForm
 import json
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect, render
 
 # Create your views here.
@@ -312,3 +312,34 @@ def verActividades(request):
     except Exception as e:
         messages.error(request, str(e))
         return redirect('administrador')
+
+def estadisticas(request):
+    return render(request, 'estadisticas.html')
+
+def top3Categorias(request):
+    try:
+        url = endpoint + 'top3Categorias'
+        response = requests.get(url)
+        if response.status_code == 200:
+            data = response.json()
+            return JsonResponse(data)
+        else:
+            messages.error(request, 'Error al obtener las categorías')
+            return redirect('estadisticas')
+    except Exception as e:
+        messages.error(request, str(e))
+        return redirect('estadisticas')
+
+def top3Productos(request):
+    try:
+        url = endpoint + 'top3Productos'
+        response = requests.get(url)
+        if response.status_code == 200:
+            data = response.json()
+            return JsonResponse(data)
+        else:
+            messages.error(request, 'Error al obtener los productos')
+            return redirect('estadisticas')
+    except Exception as e:
+        messages.error(request, str(e))
+        return redirect('estadisticas')

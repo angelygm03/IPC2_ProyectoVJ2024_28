@@ -278,5 +278,35 @@ def generar_xml_actividades_hoy():
 
     return Response(full_xml_str, mimetype='application/xml')
 
+@app.route('/top3Categorias', methods=['GET'])
+def top3_categorias():
+    from collections import Counter
+
+    productos = manager.getProducto()
+    categorias = [producto['categoria'] for producto in productos]
+    contador_categorias = Counter(categorias)
+    
+    top3 = contador_categorias.most_common(3)
+    
+    data = {
+        'categorias': [item[0] for item in top3],
+        'cantidades': [item[1] for item in top3]
+    }
+    
+    return jsonify(data)
+
+@app.route('/top3Productos', methods=['GET'])
+def top3_productos():
+    productos = manager.getProducto()
+    productos.sort(key=lambda x: x['cantidad'], reverse=True)
+    top3 = productos[:3]
+    data = {
+        'productos': [item['nombre'] for item in top3],
+        'cantidades': [item['cantidad'] for item in top3]
+    }
+    return jsonify(data)
+
+
+
 if __name__ == '__main__':
     app.run(debug=True, port=5000)

@@ -21,4 +21,7 @@ urlpatterns = [
     path('confirmarCompra/', views.confirmarCompra, name='confirmarCompra'),
     path('generarReporte/', views.generar_reporte_compras, name='generarReporte'),
     path('verActividades/', views.verActividades, name='verActividades'),
+    path('estadisticas/', views.estadisticas, name='estadisticas'),
+    path('top3Categorias/', views.top3Categorias, name='top3Categorias'),
+    path('top3Productos/', views.top3Productos, name='top3Productos'),
 ]
