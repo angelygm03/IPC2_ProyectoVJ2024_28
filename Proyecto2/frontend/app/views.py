@@ -343,3 +343,6 @@ def top3Productos(request):
     except Exception as e:
         messages.error(request, str(e))
         return redirect('estadisticas')
+
+def ayuda(request):
+    return render(request, 'ayuda.html')
