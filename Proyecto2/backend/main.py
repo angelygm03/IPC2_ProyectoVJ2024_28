@@ -153,6 +153,7 @@ def confirmar_compra():
         if carrito:
             manager.compras[user_id] = manager.compras.get(user_id, []) + carrito
             manager.carritos[user_id] = []  # Vaciar el carrito después de la compra
+            manager.save_compras()
             return jsonify({'message': 'Compra confirmada correctamente'}), 200
         else:
             return jsonify({'message': 'El carrito está vacío'}), 400
