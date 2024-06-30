@@ -114,8 +114,9 @@ def verEmpleados():
 def añadirCarrito():
     data = request.json
     user_id = data.get('user_id')
-    product_ids = data.get('product_id')
-    if manager.agregarCarrito(user_id, product_ids):
+    product_id = data.get('product_id')
+    cantidad = data.get('cantidad')  
+    if manager.agregarCarrito(user_id, product_id, cantidad):  
         return jsonify({"message": "Producto añadido al carrito"}), 200
     else:
         return jsonify({"message": "Error al añadir el producto al carrito"}), 500
@@ -152,7 +153,7 @@ def confirmar_compra():
         if carrito:
             manager.compras[user_id] = manager.compras.get(user_id, []) + carrito
             manager.carritos[user_id] = []  # Vaciar el carrito después de la compra
-            return jsonify({'message': 'Compra confirmada y almacenada correctamente'}), 200
+            return jsonify({'message': 'Compra confirmada correctamente'}), 200
         else:
             return jsonify({'message': 'El carrito está vacío'}), 400
     except Exception as e:

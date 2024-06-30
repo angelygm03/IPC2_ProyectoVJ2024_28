@@ -68,12 +68,11 @@ class Manager():
             json.append(empleado)
         return json
 
-    def agregarCarrito(self, user_id, product_ids):
+    def agregarCarrito(self, user_id, product_id, cantidad):
         if user_id not in self.carritos:
-            self.carritos[user_id] = []  # Inicializa el carrito si no existe
-        if not isinstance(product_ids, list):
-            product_ids = [product_ids]
-        self.carritos[user_id].extend(product_ids)
+            self.carritos[user_id] = [] 
+        for _ in range(cantidad): 
+            self.carritos[user_id].append(product_id)
         return True
 
     def obtenerCarrito(self, user_id):

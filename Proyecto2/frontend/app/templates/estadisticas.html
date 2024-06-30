@@ -1,24 +1,24 @@
 {% extends "baseAdmin.html" %}
 {% load static %}
 {% block content %}
-<style>
-    h3 {
-        margin-top: 20px;
-        margin-bottom: 50px;
-        margin-left: 20px; 
-    }
-</style>
+<section class="jumbotron text-center">
+    <div class="container">
+        <h1 class="jumbotron-heading">Estadísticas</h1>
+        <p class="lead text-muted">-Consulta los detalles de los productos-</p>
+        <div class="img-container">
+            <img src="{% static 'images/search.png' %}" alt="Compras" class="img-fluid mx-auto d-block">
+        </div>
+    </div>
+</section>
 
-<h3>Estadísticas</h3>
-
-<div style="display: flex; justify-content: space-around;">
+<div style="display: flex; justify-content: space-around; margin-bottom: 50px;">
     <!-- Gráfica de categorías -->
-    <div style="width: 550px; text-align: center;">
+    <div style="width: 550px; text-align: center; margin-bottom: 50px;"> 
         <h5>Top 3 categorías con más productos</h5>
         <canvas id="chartTop3Categorias" width="400" height="200"></canvas>
     </div>
     <!-- Gráfica de productos -->
-    <div style="width: 550px; text-align: center;">
+    <div style="width: 550px; text-align: center; margin-bottom: 50px;"> 
         <h5>Top 3 productos con más cantidad disponible</h5>
         <canvas id="chartTop3Productos" width="400" height="200"></canvas>
     </div>
@@ -85,7 +85,7 @@
                         },
                         plugins: {
                             legend: {
-                                display: false // Oculta la leyenda
+                                display: false 
                             }
                         }
                     }

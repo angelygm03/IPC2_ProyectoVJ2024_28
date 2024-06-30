@@ -188,7 +188,6 @@ def comprar(request):
     }
     return render(request, 'user.html', context)
 
-#metodo para añadir al carrito desde el forms.py en la clase AddCartForm
 def añadirCarrito(request):
     try:
         if request.method == 'POST':
@@ -196,12 +195,14 @@ def añadirCarrito(request):
             if form.is_valid():
                 user_id = form.cleaned_data['user_id']
                 product_id = form.cleaned_data['product_id']
-                print(f"Datos enviados al backend: user_id={user_id}, product_id={product_id}")  # Print para depuración
+                cantidad = request.POST.get('cantidad', 1)  # Obtener la cantidad del formulario
+                print(f"Datos enviados al backend: user_id={user_id}, product_id={product_id}, cantidad={cantidad}")  # Print para depuración
                 # PETICION AL BACKEND
                 url = endpoint + 'añadirCarrito'
                 data = {
                     'user_id': user_id,
-                    'product_id': product_id
+                    'product_id': product_id,
+                    'cantidad': int(cantidad)  # Asegurarse de enviar la cantidad como entero
                 }
                 json_data = json.dumps(data)
                 headers = {

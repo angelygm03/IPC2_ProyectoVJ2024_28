@@ -1,6 +1,29 @@
 {% extends "baseAdmin.html" %}
 {% load static %}
 {% block content %}
-<h2>Reporte de Actividades</h2>
-<textarea readonly style="width: 50%; height: 400px;">{{ xml_content }}</textarea>
+<style>
+        textarea {
+            resize: none;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            font-family: monospace;
+            border-color:#d5d5d5;
+            margin-top: 5px;
+            margin-left: 200px;
+            margin-bottom: 100px;
+        }
+</style>
+<section class="jumbotron text-center">
+    <div class="container">
+      <h1 class="jumbotron-heading">Reporte de Actividades</h1>
+      <p class="lead text-muted">-Consulta las tareas a realizar el día de hoy-</p>
+      <div class="img-container">
+        <img src="{% static 'images/list.png' %}" alt="Codigo de barras" class="img-fluid mx-auto d-block">
+      </div>
+    </div>
+  </section>
+
+<textarea readonly style="width: 70%; height: 500px;">{{ xml_content }}</textarea>
 {% endblock content %}

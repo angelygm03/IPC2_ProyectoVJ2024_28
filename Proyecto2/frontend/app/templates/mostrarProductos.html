@@ -18,11 +18,12 @@
         <div class="col-md-4">
           <div class="card mb-4 box-shadow" style="width: 23rem;">
             <img class="card-img-top" style="width: 23rem; height: 20rem; " src="{{prod.imagen}}" alt="{{prod.nombre}}">
-            <div class="card-body">
+            <div class="card-body" style="height: 20rem;">
+              <h6 class="card-subtitle mb-2 text-muted" style="height: 1rem;">{{prod.id}}</h6>
                 <h5 class="card-title">{{prod.nombre}}</h5>
-                <h6 class="card-subtitle mb-2 text-muted">Q.{{prod.precio}}</h6>
-              <p class="card-text" style="text-align: justify; height: 4rem;">{{prod.descripcion}}</p>
-              <h6 class="card-subtitle mb-2 text-muted">Cantidad Disponible: {{prod.cantidad}}</h6>
+                <h6 class="card-subtitle mb-2 text-muted" style="height: 2rem;">Q.{{prod.precio}}</h6>
+              <p class="card-text" style="text-align: justify; height: 10rem;">{{prod.descripcion}}</p>
+              <h6 class="card-subtitle mb-2 text-muted" style="height: 2rem;">Cantidad Disponible: {{prod.cantidad}}</h6>
               <div class="d-flex justify-content-between align-items-center">
               </div>
             </div>
@@ -32,5 +33,5 @@
       </div>
     </div>
   </div>
-  {% endblock content %}
+{% endblock content %}
   

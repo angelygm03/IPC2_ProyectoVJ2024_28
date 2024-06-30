@@ -2,26 +2,61 @@
 {% load static %}
 {% block content %}
 <style>
+    body {
+        background-color: #f8f9fa;
+        font-family: Arial, sans-serif;
+    }
+    .container {
+        margin-top: 50px;
+        padding: 20px;
+        background-color: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
     h3 {
         margin-top: 20px;
         margin-bottom: 10px;
-        margin-left: 20px; 
+        color: #343a40;
+        font-size: 1.75rem;
+        border-bottom: 2px solid #dee2e6;
+        padding-bottom: 5px;
     }
     h5 {
         margin-top: 10px;
         margin-bottom: 10px;
-        margin-left: 20px; 
+        color: #495057;
+        font-size: 1.25rem;
+    }
+    .info-section {
+        margin-left: 20px;
+    }
+    .iframe-container {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+        margin-bottom: 50px;
+    }
+    iframe {
+        width: 80%;
+        height: 600px;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
     }
 </style>
-<h3>Información</h3>
-<h5>Nombre: Angely Lucrecia García Martínez</h5>
-<h5>Carné: 202210483</h5>
-<h5>Curso: Introducción a la Programación y Computación 2</h5>
-<h3>Documentación</h3>
-<div style="display: flex; justify-content: center; margin-top: 20px;">
-    <iframe src="{% static 'Documentación.pdf' %}" width="80%" height="600px">
-        Este navegador no soporta la visualización de PDFs. Por favor, descarga el PDF para verlo: 
-        <a href="{% static 'Documentación.pdf' %}">Descargar PDF</a>.
-    </iframe>
+
+<div class="container">
+    <h3>Información</h3>
+    <div class="info-section">
+        <h5>Nombre: Angely Lucrecia García Martínez</h5>
+        <h5>Carné: 202210483</h5>
+        <h5>Curso: Introducción a la Programación y Computación 2</h5>
+    </div>
+    <h3>Documentación</h3>
+    <div class="iframe-container">
+        <iframe src="{% static 'Documentación.pdf' %}">
+            Este navegador no soporta la visualización de PDFs. Por favor, descarga el PDF para verlo: 
+            <a href="{% static 'Documentación.pdf' %}">Descargar PDF</a>.
+        </iframe>
+    </div>
 </div>
 {% endblock content %}

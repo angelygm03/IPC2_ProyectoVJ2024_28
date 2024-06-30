@@ -1,71 +1,99 @@
 {% extends "baseAdmin.html" %}
 {% load static %}
 {% block content %}
-<div class="flex h-full">
-    <!-- lado izquierdo -->
-    <div class="w-1/4 px-4 py-2 bg-gray-200 dark:bg-gray-700 flex flex-col justify-center items-center">
-        <form class="flex items-center space-x-4 mb-4" method="POST" enctype="multipart/form-data" action="/cargaxml/">
-            {% csrf_token %}
-            <label for="file" class="px-3 py-2 bg-gray-200 text-gray-700 rounded-lg cursor-pointer hover:bg-gray-300 transition duration-150 ease-in-out">
-                Seleccionar Archivo
-            </label>
-            <input type="file" id="file" name="file" accept="text/xml" class="hidden">
-            <button type="submit" class="btn-blue">
-                <span class="mr-2">
-                    <i class="fas fa-file"></i>
-                </span>
-                Mostrar
-            </button>
-        </form>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .full-height {
+            height: 100vh;
+        }
+        textarea {
+            width: 100%;
+            height: calc(77vh - 40px); 
+            resize: none;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            font-family: monospace;
+            border-color:#d5d5d5;
+        }
+        .btn-custom {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid full-height">
+    <div class="row full-height">
+        <!-- Lado izquierdo -->
+        <div class="col-md-3 bg-light p-4 d-flex flex-column align-items-center">
+            <form class="w-100 mb-4" method="POST" enctype="multipart/form-data" action="/cargaxml/">
+                {% csrf_token %}
+                <label for="file" class="btn btn-outline-info btn-custom">
+                    Seleccionar Archivo
+                </label>
+                <input type="file" id="file" name="file" accept="text/xml" class="d-none">
+                <button type="submit" class="btn btn-info btn-custom">
+                    <i class="fas fa-file mr-2"></i> Mostrar
+                </button>
+            </form>
 
-        <form method="POST" enctype="multipart/form-data" action="/xmlusuarios/">
-            {% csrf_token %}
-            <button class="btn-blue w-full">Cargar Usuarios</button>
-        </form>
+            <form class="w-100" method="POST" enctype="multipart/form-data" action="/xmlusuarios/">
+                {% csrf_token %}
+                <button class="btn btn-dark btn-custom">Cargar Usuarios</button>
+            </form>
 
-        <form method="POST" enctype="multipart/form-data" action="/xmlproductos/">
-            {% csrf_token %}
-            <button class="btn-green mt-2 w-full">Cargar Productos</button>
-        </form>
+            <form class="w-100" method="POST" enctype="multipart/form-data" action="/xmlproductos/">
+                {% csrf_token %}
+                <button class="btn btn-dark btn-custom mt-2">Cargar Productos</button>
+            </form>
 
-        <form method="POST" enctype="multipart/form-data" action="/xmlempleados/">
-            {% csrf_token %}
-            <button class="btn-yellow mt-2 w-full">Cargar Empleados</button>
-        </form>
+            <form class="w-100" method="POST" enctype="multipart/form-data" action="/xmlempleados/">
+                {% csrf_token %}
+                <button class="btn btn-dark btn-custom mt-2">Cargar Empleados</button>
+            </form>
 
-        <form method="POST" enctype="multipart/form-data" action="/xmlactividades/">
-            {% csrf_token %}
-            <button class="btn-yellow mt-2 w-full">Cargar Actividades</button>
-        </form>
+            <form class="w-100" method="POST" enctype="multipart/form-data" action="/xmlactividades/">
+                {% csrf_token %}
+                <button class="btn btn-dark btn-custom mt-2">Cargar Actividades</button>
+            </form>
 
-        <form method="POST" enctype="multipart/form-data">
-            {% csrf_token %}
-            <button>Limpiar Vista Previa</button>
-        </form>
-        {% if messages %}
-            {% for message in messages %}
-                <p class="
-                    {% if message.tags == 'success' %}
-                        bg-green-500 text-white
-                    {% elif message.tags == 'error' %}
-                        bg-red-500 text-white
-                    {% endif %}
-                    px-3 py-2 rounded-lg mb-2
-                ">
-                    {{ message }}
-                </p>
-            {% endfor %}
-        {% endif %}
-    </div>
+            {% if messages %}
+                <div class="w-100 mt-4">
+                    {% for message in messages %}
+                        <p class="alert 
+                            {% if message.tags == 'success' %}
+                                alert-success
+                            {% elif message.tags == 'error' %}
+                                alert-danger
+                            {% endif %}
+                        ">
+                            {{ message }}
+                        </p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
 
-    <!-- lado derecho -->
-    <div class="w-3/4 mx-4 flex flex-col">
-        <h1 >Vista Previa</h1>
-        {% if contenido_archivo %}
-            <textarea  readonly>{{contenido_archivo}}</textarea>
-        {% else %}
-            <textarea readonly></textarea>
-        {% endif %}
+        <!-- Lado derecho -->
+        <div class="col-md-9 p-4">
+            <h2>Vista Previa</h2>
+            {% if contenido_archivo %}
+                <textarea readonly>{{ contenido_archivo }}</textarea>
+            {% else %}
+                <textarea readonly></textarea>
+            {% endif %}
+        </div>
     </div>
 </div>
+
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
 {% endblock %}

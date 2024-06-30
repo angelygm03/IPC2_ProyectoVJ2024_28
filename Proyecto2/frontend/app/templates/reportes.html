@@ -1,6 +1,29 @@
 {% extends "baseAdmin.html" %}
 {% load static %}
 {% block content %}
-<h2>Reporte de Compras</h2>
-<textarea readonly style="width: 50%; height: 400px;">{{ xml_content }}</textarea>
+<style>
+        textarea {
+            resize: none;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            font-family: monospace;
+            border-color:#d5d5d5;
+            margin-top: 5px;
+            margin-left: 200px;
+            margin-bottom: 100px;
+        }
+</style>
+<section class="jumbotron text-center">
+    <div class="container">
+      <h1 class="jumbotron-heading">Reporte de Compras</h1>
+      <p class="lead text-muted">-Consulta los detalles de las compras realizadas-</p>
+      <div class="img-container">
+        <img src="{% static 'images/bill.png' %}" alt="Compras" class="img-fluid mx-auto d-block">
+      </div>
+    </div>
+  </section>
+
+<textarea readonly style="width: 70%; height: 500px;">{{ xml_content }}</textarea>
 {% endblock content %}
