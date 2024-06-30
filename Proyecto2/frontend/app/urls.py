@@ -25,4 +25,5 @@ urlpatterns = [
     path('top3Categorias/', views.top3Categorias, name='top3Categorias'),
     path('top3Productos/', views.top3Productos, name='top3Productos'),
     path('ayuda/', views.ayuda, name='ayuda'),
+    path('logout/', views.logout, name='logout'),
 ]
